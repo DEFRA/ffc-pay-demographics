@@ -2,4 +2,4 @@ services:
   ffc-pay-demographics:
     command: npm run test:debug
     ports:
-      - "9229:9229"
+      - "9111:9229"

@@ -1,7 +1,9 @@
 const storageConfig = require('./storage')
-const transferConfig = require('./transfer')
+const processingConfig = require('./processing')
+const messagingConfig = require('./messaging')
 
 module.exports = {
   storageConfig,
-  transferConfig
+  processingConfig,
+  messagingConfig
 }

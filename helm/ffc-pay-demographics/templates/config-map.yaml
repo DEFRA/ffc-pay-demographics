@@ -6,7 +6,7 @@ data:
   DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
   DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
   DEMOGRAPHICS_STORAGE_FOLDER_NAME: {{ quote .Values.container.demographicsStorageFolder }}
-    MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
+  MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
   CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}

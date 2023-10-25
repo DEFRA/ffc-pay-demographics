@@ -1,9 +1,13 @@
 const mockGetShareClient = jest.fn()
 const mockFileContent = 'content'
 const mockDelete = jest.fn()
+const mockCreate = jest.fn()
+const mockUploadRange = jest.fn()
 const mockFile = {
   downloadToBuffer: jest.fn().mockResolvedValue(Buffer.from(mockFileContent)),
-  delete: mockDelete
+  delete: mockDelete,
+  create: mockCreate,
+  uploadRange: mockUploadRange
 }
 const mockShare = {
   getDirectoryClient: jest.fn().mockReturnValue({
@@ -25,7 +29,7 @@ jest.mock('@azure/storage-file-share', () => {
   }
 })
 
-const { getDemographicsFiles, downloadFile, deleteFile } = require('../app/storage')
+const { getDemographicsFiles, downloadFile, uploadFile, deleteFile } = require('../app/storage')
 
 describe('storage', () => {
   beforeEach(() => {
@@ -43,6 +47,14 @@ describe('storage', () => {
     test('should download file', async () => {
       const fileContent = await downloadFile('file1')
       expect(fileContent).toEqual(mockFileContent)
+    })
+  })
+
+  describe('upload file', () => {
+    test('should upload file', async () => {
+      await uploadFile('file1', 'content')
+      expect(mockCreate).toHaveBeenCalled()
+      expect(mockUploadRange).toHaveBeenCalled()
     })
   })
 

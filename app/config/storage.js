@@ -2,16 +2,22 @@ const Joi = require('joi')
 
 const schema = Joi.object({
   enabled: Joi.boolean().default(true),
-  shareConnectionString: Joi.string().required(),
-  shareName: Joi.string().required(),
-  demographicsFolder: Joi.string().required()
+  demographicsShareConnectionString: Joi.string().required(),
+  demographicsShareName: Joi.string().required(),
+  demographicsFolder: Joi.string().required(),
+  daxShareConnectionString: Joi.string().required(),
+  daxShareName: Joi.string().required(),
+  daxFolder: Joi.string().required()
 })
 
 const config = {
   enabled: process.env.ENABLED,
-  shareConnectionString: process.env.DEMOGRAPHICS_STORAGE_CONNECTION_STRING,
-  shareName: process.env.DEMOGRAPHICS_STORAGE_SHARE_NAME,
-  demographicsFolder: process.env.DEMOGRAPHICS_STORAGE_FOLDER_NAME
+  demographicsShareConnectionString: process.env.DEMOGRAPHICS_STORAGE_CONNECTION_STRING,
+  demographicsShareName: process.env.DEMOGRAPHICS_STORAGE_SHARE_NAME,
+  demographicsFolder: process.env.DEMOGRAPHICS_STORAGE_FOLDER_NAME,
+  daxShareConnectionString: process.env.DAX_STORAGE_CONNECTION_STRING,
+  daxShareName: process.env.DAX_STORAGE_SHARE_NAME,
+  daxFolder: process.env.DAX_STORAGE_FOLDER_NAME
 }
 
 const result = schema.validate(config, {

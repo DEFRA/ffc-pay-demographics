@@ -28,6 +28,9 @@ container:
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
   demographicsStorageFolder: outbound
+  daxStorageConnectionString: myconnectionstring
+  daxStorageShareName: demographics
+  daxStorageFolder: dax
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer

@@ -3,6 +3,7 @@
 data:
   NODE_ENV: {{ quote .Values.environment }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
+  ENABLED: {{ quote .Values.container.enabled }}
   DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
   DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
   DEMOGRAPHICS_STORAGE_FOLDER_NAME: {{ quote .Values.container.demographicsStorageFolder }}

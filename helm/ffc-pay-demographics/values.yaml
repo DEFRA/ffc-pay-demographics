@@ -25,6 +25,7 @@ container:
   requestCpu: 100m
   limitMemory: 100Mi
   limitCpu: 100m
+  enabled: true
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
   demographicsStorageFolder: outbound

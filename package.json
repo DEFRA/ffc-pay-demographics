@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-demographics",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Process customer updates",
   "homepage": "https://github.com/DEFRA/ffc-pay-demographics",
   "main": "app/index.js",
@@ -17,8 +17,12 @@
   "contributors": [],
   "license": "OGL-UK-3.0",
   "dependencies": {
-    "@hapi/hapi": "21.3.2",
-    "applicationinsights": "2.8.0"
+    "@azure/identity": "2.0.5",
+    "@azure/storage-file-share": "12.9.0",
+    "applicationinsights": "2.8.0",
+    "ffc-messaging": "2.7.0",
+    "joi": "17.11.0",
+    "log-timestamp": "0.3.0"
   },
   "devDependencies": {
     "jest": "29.7.0",

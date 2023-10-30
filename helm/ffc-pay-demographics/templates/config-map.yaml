@@ -2,6 +2,19 @@
 {{- define "ffc-pay-demographics.config-map" -}}
 data:
   NODE_ENV: {{ quote .Values.environment }}
-  PORT: {{ quote .Values.container.port }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
+  DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
+  DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
+  DEMOGRAPHICS_STORAGE_FOLDER_NAME: {{ quote .Values.container.demographicsStorageFolder }}
+  DAX_STORAGE_CONNECTION_STRING: {{ quote .Values.container.daxStorageConnectionString }}
+  DAX_STORAGE_SHARE_NAME: {{ quote .Values.container.daxStorageShareName }}
+  DAX_STORAGE_FOLDER_NAME: {{ quote .Values.container.daxStorageFolder }}
+  MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
+  {{- if and (.Values.environmentCode) (not .Values.pr) }}
+  DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
+  CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}
+  {{ else }}
+  DEMOGRAPHICS_TOPIC_ADDRESS: {{ quote .Values.container.demographicsTopicAddress }}
+  CUSTOMER_TOPIC_ADDRESS: {{ quote .Values.container.customerTopicAddress }}
+  {{- end }}
 {{- end -}}

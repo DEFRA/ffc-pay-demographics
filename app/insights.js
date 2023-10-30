@@ -12,4 +12,6 @@ const setup = () => {
   }
 }
 
-module.exports = { setup }
+module.exports = {
+  setup
+}

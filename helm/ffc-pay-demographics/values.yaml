@@ -36,6 +36,7 @@ container:
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
+  azureStorageUseConnectionString: false
 
 aadPodIdentity: true
 

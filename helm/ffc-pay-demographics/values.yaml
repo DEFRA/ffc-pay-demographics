@@ -26,6 +26,7 @@ container:
   limitMemory: 100Mi
   limitCpu: 100m
   enabled: true
+  azureStorageAccountName: ffcpay
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
   demographicsStorageFolder: outbound

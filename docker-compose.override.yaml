@@ -1,3 +1,5 @@
+version: '3.8'
+
 # This override file should be used when running this service in isolation
 # to provide dependencies and expose ports for local testing
 
@@ -7,8 +9,21 @@ services:
       target: development
     image: ffc-pay-demographics-development
     container_name: ffc-pay-demographics-development
+    environment:
+      DEMOGRAPHICS_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://ffc-pay-demographics-azurite:10000/devstoreaccount1;
     ports:
       - "9111:9229"
     volumes:
       - ./app:/home/node/app
       - ./package.json:/home/node/package.json
+    depends_on:
+      - ffc-pay-demographics-azurite
+
+  ffc-pay-demographics-azurite:
+    volumes:
+      - azurite_data:/data
+    ports:
+      - "10022:10000"
+
+volumes:
+  azurite_data:

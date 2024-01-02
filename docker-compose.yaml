@@ -5,8 +5,13 @@ services:
       target: production
     image: ffc-pay-demographics
     container_name: ffc-pay-demographics
+    depends_on:
+      - ffc-pay-demographics-azurite
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-pay-demographics-local
+      AZURE_STORAGE_USE_CONNECTION_STRING: "true"
+      AZURE_STORAGE_CREATE_CONTAINERS: "true"
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME:-devstoreaccount1}
       APPINSIGHTS_CONNECTIONSTRING: ${APPINSIGHTS_CONNECTIONSTRING}
       MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
       MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
@@ -20,3 +25,9 @@ services:
       DAX_STORAGE_SHARE_NAME: ${DAX_STORAGE_SHARE_NAME:-demographics}
       DAX_STORAGE_FOLDER_NAME: ${DAX_STORAGE_FOLDER_NAME:-dax}
       POLLING_INTERVAL: ${POLLING_INTERVAL:-10000}
+
+  ffc-pay-demographics-azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.23.0
+    command: "azurite-blob --loose --blobHost 0.0.0.0"
+    labels:
+      com.docker.compose.pay.role: ffc-pay-batch-azurite

@@ -5,6 +5,8 @@ services:
   ffc-pay-demographics:
     build:
       target: development
+    depends_on:
+    - ffc-pay-demographics-azurite
     image: ffc-pay-demographics-development
     container_name: ffc-pay-demographics-test
     command: npm run test
@@ -15,5 +17,8 @@ services:
       - ./jest.config.js:/home/node/jest.config.js
       - ./package.json:/home/node/package.json
     environment:
-      DEMOGRAPHICS_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=https;AccountName=fake;AccountKey=fake==;EndpointSuffix=core.windows.net
-      DAX_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=https;AccountName=fake;AccountKey=fake==;EndpointSuffix=core.windows.net
+      DEMOGRAPHICS_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://ffc-pay-demographics-azurite:10000/devstoreaccount1;
+
+  ffc-pay-demographics-azurite:
+    labels:
+      com.docker.compose.pay.role: test

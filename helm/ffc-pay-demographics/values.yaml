@@ -26,6 +26,7 @@ container:
   limitMemory: 100Mi
   limitCpu: 100m
   enabled: true
+  azureStorageAccountName: ffcpay
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
   demographicsStorageFolder: outbound
@@ -35,6 +36,7 @@ container:
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
+  azureStorageUseConnectionString: false
 
 aadPodIdentity: true
 

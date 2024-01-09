@@ -39,7 +39,6 @@ services:
       POSTGRES_DB: ffc_pay_demographics
       POSTGRES_PASSWORD: ppp
       POSTGRES_USERNAME: postgres
-
   ffc-pay-demographics-azurite:
     image: mcr.microsoft.com/azure-storage/azurite:3.23.0
     command: "azurite-blob --loose --blobHost 0.0.0.0"

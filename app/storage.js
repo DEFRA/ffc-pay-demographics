@@ -53,10 +53,8 @@ const getBlob = async (filename, contName, folder) => {
 
 const getDemographicsFiles = async () => {
   containersInitialised ?? await initialiseContainers()
-
   const fileList = []
   for await (const item of demographicsContainer.listBlobsFlat({ prefix: storageConfig.demographicsFolder })) {
-    // Awaiting confirmation on file naming convention
     if (item.kind === 'file' && /\d{7}_\d*.json$/.test(item.name)) {
       console.log(`Found item: ${item.name}`)
       fileList.push(item.name)

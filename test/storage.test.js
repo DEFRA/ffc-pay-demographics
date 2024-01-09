@@ -5,7 +5,8 @@ const mockContainerClient = {
   createIfNotExists: jest.fn(),
   listBlobsFlat: jest.fn().mockReturnValue([
     { name: 'file.txt', kind: 'file' },
-    { name: 'file2.json', kind: 'file' }
+    { name: 'file.json', kind: 'file' },
+    { name: '1234855_1321434.json', kind: 'file' }
   ]),
   getBlockBlobClient: jest.fn().mockImplementation(() => {
     return {
@@ -26,6 +27,7 @@ jest.mock('@azure/storage-blob', () => {
   }
 })
 
+const { DEMOGRAPHICS } = require('../app/constants/file-types')
 const { getDemographicsFiles, downloadFile, uploadFile, deleteFile } = require('../app/storage')
 
 describe('storage', () => {
@@ -36,27 +38,27 @@ describe('storage', () => {
   describe('get demographics files', () => {
     test('should return only demographics files', async () => {
       const fileList = await getDemographicsFiles()
-      expect(fileList).toEqual(['file2.json'])
+      expect(fileList).toEqual(['1234855_1321434.json'])
     })
   })
 
   describe('download file', () => {
     test('should download file', async () => {
-      const fileContent = await downloadFile('file2', 'demographics')
+      const fileContent = await downloadFile('1234855_1321434', DEMOGRAPHICS)
       expect(fileContent).toEqual(mockFileContent)
     })
   })
 
   describe('upload file', () => {
     test('should upload file', async () => {
-      await uploadFile('file1', 'content', 'demographics')
+      await uploadFile('new_file', 'content', DEMOGRAPHICS)
       expect(mockCreate).toHaveBeenCalled()
     })
   })
 
   describe('delete file', () => {
     test('should delete file', async () => {
-      await deleteFile('file1')
+      await deleteFile('1234855_1321434')
       expect(mockDelete).toHaveBeenCalled()
     })
   })

@@ -13,24 +13,29 @@ const { createDaxUpdate: mockCreateDaxUpdate } = require('../../../app/processin
 jest.mock('../../../app/messaging')
 const { sendMessage: mockSendMessage } = require('../../../app/messaging')
 
-const { processFile } = require('../../../app/processing/process-file')
-const { DEMOGRAPHICS, CUSTOMER } = require('../../../app/constants/types')
+const content = require('../../mocks/file-content')
+const customerContent = require('../../mocks/customer-content')
 
-const filename = 'file1'
-const content = 'file data'
+const { processFile } = require('../../../app/processing/process-file')
+const { DEMOGRAPHICS: DEMOGRAPHICS_MSG, CUSTOMER: CUSTOMER_MSG } = require('../../../app/constants/message-types')
+const { DEMOGRAPHICS: DEMOGRAPHICS_FILE } = require('../../../app/constants/file-types')
+
+const filename = require('../../mocks/filename')
+const exportFilename = require('../../mocks/export-filename')
+const daxUpdate = require('../../mocks/dax-update')
 
 describe('process file', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockDownloadFile.mockResolvedValue(content)
-    mockCreateDemographicsUpdate.mockReturnValue({})
-    mockCreateCustomerUpdate.mockReturnValue({})
-    mockCreateDaxUpdate.mockReturnValue({})
+    mockCreateDemographicsUpdate.mockReturnValue(content)
+    mockCreateCustomerUpdate.mockReturnValue(customerContent)
+    mockCreateDaxUpdate.mockReturnValue(daxUpdate)
   })
 
   test('should download file from file storage', async () => {
     await processFile(filename)
-    expect(mockDownloadFile).toHaveBeenCalledWith(filename)
+    expect(mockDownloadFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS_FILE)
   })
 
   test('should create demographics update', async () => {
@@ -40,26 +45,31 @@ describe('process file', () => {
 
   test('should send demographics update', async () => {
     await processFile(filename)
-    expect(mockSendMessage).toHaveBeenNthCalledWith(1, {}, DEMOGRAPHICS)
+    expect(mockSendMessage).toHaveBeenNthCalledWith(1, content, DEMOGRAPHICS_MSG)
+  })
+
+  test('should create customer update for each party', async () => {
+    await processFile(filename)
+    expect(mockCreateCustomerUpdate).toHaveBeenCalledTimes(1)
   })
 
   test('should create customer update', async () => {
     await processFile(filename)
-    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content)
+    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0])
   })
 
   test('should send customer update', async () => {
     await processFile(filename)
-    expect(mockSendMessage).toHaveBeenNthCalledWith(2, {}, CUSTOMER)
+    expect(mockSendMessage).toHaveBeenNthCalledWith(2, customerContent, CUSTOMER_MSG)
   })
 
   test('should upload file to file storage', async () => {
     await processFile(filename)
-    expect(mockUploadFile).toHaveBeenCalledWith(filename, {})
+    expect(mockUploadFile).toHaveBeenCalledWith(exportFilename, daxUpdate, DEMOGRAPHICS_FILE)
   })
 
   test('should delete file from file storage', async () => {
     await processFile(filename)
-    expect(mockDeleteFile).toHaveBeenCalledWith(filename)
+    expect(mockDeleteFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS_FILE)
   })
 })

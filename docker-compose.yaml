@@ -6,6 +6,7 @@ services:
     image: ffc-pay-demographics
     container_name: ffc-pay-demographics
     depends_on:
+      - ffc-pay-demographics-postgres
       - ffc-pay-demographics-azurite
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-pay-demographics-local
@@ -25,6 +26,19 @@ services:
       DAX_STORAGE_SHARE_NAME: ${DAX_STORAGE_SHARE_NAME:-demographics}
       DAX_STORAGE_FOLDER_NAME: ${DAX_STORAGE_FOLDER_NAME:-dax}
       POLLING_INTERVAL: ${POLLING_INTERVAL:-10000}
+      POSTGRES_DB: ffc_pay_demographics
+      POSTGRES_HOST: ${POSTGRES_HOST:-ffc-pay-demographics-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SCHEMA_PASSWORD:-ppp}
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
+      POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
+
+  ffc-pay-demographics-postgres:
+    image: postgres:11.4-alpine
+    environment:
+      POSTGRES_DB: ffc_pay_demographics
+      POSTGRES_PASSWORD: ppp
+      POSTGRES_USERNAME: postgres
 
   ffc-pay-demographics-azurite:
     image: mcr.microsoft.com/azure-storage/azurite:3.23.0

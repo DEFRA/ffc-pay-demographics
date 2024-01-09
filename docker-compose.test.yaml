@@ -19,6 +19,13 @@ services:
     environment:
       DEMOGRAPHICS_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://ffc-pay-demographics-azurite:10000/devstoreaccount1;
 
+  ffc-pay-demographics-postgres:
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   ffc-pay-demographics-azurite:
     labels:
       com.docker.compose.pay.role: test
+
+volumes:
+  postgres_data: {}

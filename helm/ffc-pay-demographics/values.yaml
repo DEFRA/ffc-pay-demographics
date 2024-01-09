@@ -38,6 +38,13 @@ container:
   customerTopicAddress: ffc-pay-customer
   azureStorageUseConnectionString: false
 
+postgresService:
+  postgresDb: ffc_pay_demographics
+  postgresqlHost: ffc-pay-demographics-postgres
+  postgresPort: 5432
+  postgresSchema: public
+  postgresUser: postgres
+
 aadPodIdentity: true
 
 azureIdentity:

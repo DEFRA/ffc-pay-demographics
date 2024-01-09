@@ -1,6 +1,7 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
+const { DEMOGRAPHICS } = require('./constants/file-types')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
@@ -42,9 +43,9 @@ const initialiseFolders = async () => {
 }
 
 const getBlob = async (filename, contName, folder) => {
-  const fileContainer = contName === 'demographics' ? demographicsContainer : daxContainer
+  const fileContainer = contName === DEMOGRAPHICS ? demographicsContainer : daxContainer
   if (!folder) {
-    folder = contName === 'demographics' ? storageConfig.demographicsFolder : storageConfig.daxFolder
+    folder = contName === DEMOGRAPHICS ? storageConfig.demographicsFolder : storageConfig.daxFolder
   }
   containersInitialised ?? await initialiseContainers()
   return fileContainer.getBlockBlobClient(`${folder}/${filename}`)
@@ -55,10 +56,9 @@ const getDemographicsFiles = async () => {
 
   const fileList = []
   for await (const item of demographicsContainer.listBlobsFlat({ prefix: storageConfig.demographicsFolder })) {
-    console.log(`Found item: ${item.name}`)
-
     // Awaiting confirmation on file naming convention
-    if (item.kind === 'file' && /^.*.json$/.test(item.name)) {
+    if (item.kind === 'file' && /\d{7}_\d*.json$/.test(item.name)) {
+      console.log(`Found item: ${item.name}`)
       fileList.push(item.name)
     }
   }

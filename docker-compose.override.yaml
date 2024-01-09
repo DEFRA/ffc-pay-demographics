@@ -25,5 +25,12 @@ services:
     ports:
       - "10022:10000"
 
+  ffc-pay-demographics-postgres:
+    ports:
+      - "5423:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   azurite_data:
+  postgres_data:

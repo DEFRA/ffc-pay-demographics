@@ -1,16 +1,15 @@
 const city = require('./city')
 const country = require('./country')
 const frn = require('./frn')
-const firstName = require('./first-name')
-const lastName = require('./last-name')
-const middleName = require('./middle-name')
-const title = require('./title')
 const street1 = require('./street-1')
 const street2 = require('./street-2')
 const street3 = require('./street-3')
 const street4 = require('./street-4')
 const postCode = require('./post-code')
 const addressRole = require('./address-role')
+const name = require('./name')
+const claimantGroup = require('./claimant-group')
+const email = require('./email')
 
 module.exports = {
   header: {
@@ -20,22 +19,12 @@ module.exports = {
   capparty: [
     {
       rev: 12219496,
-      person: {
-        rev: 12219496,
-        partyId: 5108198,
-        title,
-        firstName,
-        middleName,
-        lastName,
-        dateOfBirth: -125280000000,
-        updateType: 'U',
-        customerReference: frn,
-        niNumber: null,
-        personalIdentifier: '116136839',
-        doNotContact: false,
-        mdmId: null
+      person: null,
+      organisation: {
+        name,
+        frn,
+        claimantGroup
       },
-      organisation: null,
       phoneContact: [
         {
           partyId: 5108198,
@@ -54,7 +43,17 @@ module.exports = {
           mdmId: '16394620'
         }
       ],
-      digitalContact: [],
+      digitalContact: [
+        {
+          partyId: 5108198,
+          partyContactId: 3,
+          digitalContactTypeId: 100301,
+          digitalAddress: email,
+          updateType: 'U',
+          mdmId: '12993499',
+          validated: false
+        }
+      ],
       legacyIdentifier: [
         {
           partyId: 5108198,

@@ -26,10 +26,10 @@ const config = {
     appInsights: process.env.NODE_ENV === PRODUCTION ? require('applicationinsights') : undefined
   },
   demographicsTopic: {
-    address: process.env.PROCESSING_TOPIC_ADDRESS
+    address: process.env.DEMOGRAPHICS_TOPIC_ADDRESS
   },
   customerTopic: {
-    address: process.env.RESPONSE_TOPIC_ADDRESS
+    address: process.env.CUSTOMER_TOPIC_ADDRESS
   }
 }
 

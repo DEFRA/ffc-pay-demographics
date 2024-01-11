@@ -1,5 +1,5 @@
 const { MessageSender } = require('ffc-messaging')
-const { messageConfig } = require('../config')
+const { messagingConfig } = require('../config')
 const { createMessage } = require('./create-message')
 const { CUSTOMER } = require('../constants/message-types')
 
@@ -12,7 +12,7 @@ const sendMessage = async (body, type) => {
 }
 
 const getTopic = (type) => {
-  return type === CUSTOMER ? messageConfig.customerTopic : messageConfig.demographicsTopic
+  return type === CUSTOMER ? messagingConfig.customerTopic : messagingConfig.demographicsTopic
 }
 
 module.exports = {

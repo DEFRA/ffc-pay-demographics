@@ -1,11 +1,11 @@
 jest.mock('../../../app/storage')
-const { downloadFile: mockDownloadFile, uploadFile: mockUploadFile, deleteFile: mockDeleteFile } = require('../../../app/storage')
-
-jest.mock('../../../app/processing/create-demographics-update')
-const { createDemographicsUpdate: mockCreateDemographicsUpdate } = require('../../../app/processing/create-demographics-update')
+const { downloadFile: mockDownloadFile, uploadFile: mockUploadFile, deleteFile: mockDeleteFile, quarantineFile: mockQuarantineFile } = require('../../../app/storage')
 
 jest.mock('../../../app/processing/create-customer-update')
 const { createCustomerUpdate: mockCreateCustomerUpdate } = require('../../../app/processing/create-customer-update')
+
+jest.mock('../../../app/processing/create-dax-data')
+const { createDaxData: mockCreateDaxData } = require('../../../app/processing/create-dax-data')
 
 jest.mock('../../../app/processing/create-dax-update')
 const { createDaxUpdate: mockCreateDaxUpdate } = require('../../../app/processing/create-dax-update')
@@ -17,40 +17,44 @@ const content = require('../../mocks/file-content')
 const customerContent = require('../../mocks/customer-content')
 
 const { processFile } = require('../../../app/processing/process-file')
-const { DEMOGRAPHICS: DEMOGRAPHICS_MSG, CUSTOMER: CUSTOMER_MSG } = require('../../../app/constants/message-types')
-const { DEMOGRAPHICS: DEMOGRAPHICS_FILE } = require('../../../app/constants/file-types')
+const { CUSTOMER: CUSTOMER_MSG } = require('../../../app/constants/message-types')
 
 const filename = require('../../mocks/filename')
-const exportFilename = require('../../mocks/export-filename')
 const daxUpdate = require('../../mocks/dax-update')
+const outboundFilename = require('../../mocks/outbound-filename')
+const { DAX, DEMOGRAPHICS } = require('../../../app/constants/containers')
+
+const err = new Error('These are not the droids you\'re looking for')
 
 describe('process file', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockDownloadFile.mockResolvedValue(content)
-    mockCreateDemographicsUpdate.mockReturnValue(content)
+    jest.spyOn(console, 'error').mockImplementation(() => { })
+    mockDownloadFile.mockResolvedValue(JSON.stringify(content))
     mockCreateCustomerUpdate.mockReturnValue(customerContent)
+    mockSendMessage.mockReturnValue(true)
+    mockCreateDaxData.mockReturnValue(customerContent)
     mockCreateDaxUpdate.mockReturnValue(daxUpdate)
+    mockUploadFile.mockResolvedValue(true)
+    mockDeleteFile.mockResolvedValue(true)
   })
 
   test('should download file from file storage', async () => {
     await processFile(filename)
-    expect(mockDownloadFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS_FILE)
+    expect(mockDownloadFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS)
   })
 
-  test('should create demographics update', async () => {
+  test('if download fails, should throw error', async () => {
+    mockDownloadFile.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockCreateDemographicsUpdate).toHaveBeenCalledWith(content)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
   })
 
-  test('should send demographics update', async () => {
+  test('if download fails, should quarantine file', async () => {
+    mockDownloadFile.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockSendMessage).toHaveBeenNthCalledWith(1, content, DEMOGRAPHICS_MSG)
-  })
-
-  test('should create customer update for each party', async () => {
-    await processFile(filename)
-    expect(mockCreateCustomerUpdate).toHaveBeenCalledTimes(1)
+    expect(mockQuarantineFile).toHaveBeenCalled()
   })
 
   test('should create customer update', async () => {
@@ -58,18 +62,75 @@ describe('process file', () => {
     expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0])
   })
 
+  test('if create customer update fails, should throw error', async () => {
+    mockCreateCustomerUpdate.mockRejectedValue(err)
+    await processFile(filename)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
+  })
+
+  test('if create customer update fails, should quarantine file', async () => {
+    mockCreateCustomerUpdate.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
   test('should send customer update', async () => {
     await processFile(filename)
-    expect(mockSendMessage).toHaveBeenNthCalledWith(2, customerContent, CUSTOMER_MSG)
+    expect(mockSendMessage).toHaveBeenCalledWith(customerContent, CUSTOMER_MSG)
+  })
+
+  test('if sending customer update fails, should throw error', async () => {
+    mockSendMessage.mockRejectedValue(err)
+    await processFile(filename)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
+  })
+
+  test('if sending customer update fails, should quarantine file', async () => {
+    mockSendMessage.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
+  test('should create dax data', async () => {
+    await processFile(filename)
+    expect(mockCreateDaxData).toHaveBeenCalledWith(content.capparty[0])
+  })
+
+  test('if creating dax data fails, should throw error', async () => {
+    mockCreateDaxData.mockRejectedValue(err)
+    await processFile(filename)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
+  })
+
+  test('if creating dax data fails, should quarantine file', async () => {
+    mockCreateDaxData.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockQuarantineFile).toHaveBeenCalled()
   })
 
   test('should upload file to file storage', async () => {
     await processFile(filename)
-    expect(mockUploadFile).toHaveBeenCalledWith(exportFilename, daxUpdate, DEMOGRAPHICS_FILE)
+    expect(mockUploadFile).toHaveBeenCalledWith(outboundFilename, daxUpdate, DAX)
+  })
+
+  test('if uploading file fails, should throw error', async () => {
+    mockUploadFile.mockRejectedValue(err)
+    await processFile(filename)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
+  })
+
+  test('if uploading file fails, should quarantine file', async () => {
+    mockUploadFile.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockQuarantineFile).toHaveBeenCalled()
   })
 
   test('should delete file from file storage', async () => {
     await processFile(filename)
-    expect(mockDeleteFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS_FILE)
+    expect(mockDeleteFile).toHaveBeenCalledWith(filename, DEMOGRAPHICS)
   })
 })

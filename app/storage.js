@@ -1,7 +1,7 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
-const { DEMOGRAPHICS } = require('./constants/file-types')
+const { DEMOGRAPHICS } = require('./constants/containers')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
@@ -55,9 +55,10 @@ const getDemographicsFiles = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
   for await (const item of demographicsContainer.listBlobsFlat({ prefix: storageConfig.demographicsFolder })) {
-    if (item.kind === 'file' && /\d{7}_\d*.json$/.test(item.name)) {
-      console.log(`Found item: ${item.name}`)
-      fileList.push(item.name)
+    const filename = item.name.replace(`${storageConfig.demographicsFolder}/`, '')
+    if (/\d{7}_\d*.json$/.test(filename)) {
+      console.log(`Found item: ${filename}`)
+      fileList.push(filename)
     }
   }
 
@@ -80,9 +81,23 @@ const deleteFile = async (filename, contName) => {
   await blobClient.delete()
 }
 
+const quarantineFile = async (filename, contName) => {
+  const sourceBlob = await getBlob(filename, contName)
+  const destinationBlob = await getBlob(filename, contName, 'quarantine')
+  const copyResult = await (await destinationBlob.beginCopyFromURL(sourceBlob.url)).pollUntilDone()
+
+  if (copyResult.copyStatus === 'success') {
+    await sourceBlob.delete()
+    return true
+  }
+
+  return false
+}
+
 module.exports = {
   getDemographicsFiles,
   downloadFile,
   uploadFile,
-  deleteFile
+  deleteFile,
+  quarantineFile
 }

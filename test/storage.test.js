@@ -27,7 +27,7 @@ jest.mock('@azure/storage-blob', () => {
   }
 })
 
-const { DEMOGRAPHICS } = require('../app/constants/file-types')
+const { DEMOGRAPHICS } = require('../app/constants/containers')
 const { getDemographicsFiles, downloadFile, uploadFile, deleteFile } = require('../app/storage')
 
 describe('storage', () => {

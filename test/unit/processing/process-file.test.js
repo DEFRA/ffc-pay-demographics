@@ -15,6 +15,7 @@ const { sendMessage: mockSendMessage } = require('../../../app/messaging')
 
 const content = require('../../mocks/file-content')
 const customerContent = require('../../mocks/customer-content')
+const daxData = require('../../mocks/dax-data')
 
 const { processFile } = require('../../../app/processing/process-file')
 const { CUSTOMER: CUSTOMER_MSG } = require('../../../app/constants/message-types')
@@ -33,7 +34,7 @@ describe('process file', () => {
     mockDownloadFile.mockResolvedValue(JSON.stringify(content))
     mockCreateCustomerUpdate.mockReturnValue(customerContent)
     mockSendMessage.mockReturnValue(true)
-    mockCreateDaxData.mockReturnValue(customerContent)
+    mockCreateDaxData.mockReturnValue(daxData)
     mockCreateDaxUpdate.mockReturnValue(daxUpdate)
     mockUploadFile.mockResolvedValue(true)
     mockDeleteFile.mockResolvedValue(true)
@@ -59,7 +60,7 @@ describe('process file', () => {
 
   test('should create customer update', async () => {
     await processFile(filename)
-    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0])
+    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0].organisation)
   })
 
   test('if create customer update fails, should throw error', async () => {
@@ -109,6 +110,11 @@ describe('process file', () => {
     mockCreateDaxData.mockRejectedValue(err)
     await processFile(filename)
     expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
+  test('should create dax update', async () => {
+    await processFile(filename)
+    expect(mockCreateDaxUpdate).toHaveBeenCalledWith(daxData)
   })
 
   test('should upload file to file storage', async () => {

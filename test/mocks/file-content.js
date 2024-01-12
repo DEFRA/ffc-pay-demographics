@@ -1,6 +1,7 @@
 const city = require('./city')
 const country = require('./country')
 const frn = require('./frn')
+const sbi = require('./sbi')
 const street1 = require('./street-1')
 const street2 = require('./street-2')
 const street3 = require('./street-3')
@@ -23,7 +24,8 @@ module.exports = {
       organisation: {
         name,
         frn,
-        claimantGroup
+        claimantGroup,
+        sbi
       },
       phoneContact: [
         {

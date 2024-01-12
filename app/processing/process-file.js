@@ -16,8 +16,8 @@ const processFile = async (file) => {
     const party = parsedData.capparty[0]
     // if no organisation element - no update to be made
     if (party.organisation) {
-      // need clarification on what actually goes into a customer update
-      const customerData = await createCustomerUpdate(party)
+      // need clarification on where we can recognise sbi / trader / vendor in a demographics update
+      const customerData = await createCustomerUpdate(party.organisation)
       await sendMessage(customerData, CUSTOMER)
       const daxData = await createDaxData(party)
       const daxFile = createDaxUpdate(daxData)

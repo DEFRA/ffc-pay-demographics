@@ -1,6 +1,6 @@
 const { createDaxUpdate } = require('../../../app/processing/create-dax-update')
 
-const customerContent = require('../../mocks/customer-content')
+const daxData = require('../../mocks/dax-data')
 const daxUpdate = require('../../mocks/dax-update')
 
 describe('create dax update', () => {
@@ -9,7 +9,7 @@ describe('create dax update', () => {
   })
 
   test('should return correct XML structure (ignoring whitespace)', async () => {
-    const result = await createDaxUpdate(customerContent)
+    const result = await createDaxUpdate(daxData)
     expect(result.replace(/\s/g, '')).toBe(daxUpdate.replace(/\s/g, ''))
   })
 })

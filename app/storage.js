@@ -38,6 +38,8 @@ const initialiseFolders = async () => {
   await demographicsClient.upload(placeHolderText, placeHolderText.length)
   const daxClient = daxContainer.getBlockBlobClient(`${storageConfig.daxFolder}/default.txt`)
   await daxClient.upload(placeHolderText, placeHolderText.length)
+  const daxOutboundClient = daxContainer.getBlockBlobClient(`${storageConfig.daxOutboundFolder}/default.txt`)
+  await daxOutboundClient.upload(placeHolderText, placeHolderText.length)
   foldersInitialised = true
   console.log('Folders ready')
 }
@@ -45,7 +47,7 @@ const initialiseFolders = async () => {
 const getBlob = async (filename, contName, folder) => {
   const fileContainer = contName === DEMOGRAPHICS ? demographicsContainer : daxContainer
   if (!folder) {
-    folder = contName === DEMOGRAPHICS ? storageConfig.demographicsFolder : storageConfig.daxFolder
+    folder = contName === DEMOGRAPHICS ? storageConfig.demographicsFolder : storageConfig.daxOutboundFolder
   }
   containersInitialised ?? await initialiseContainers()
   return fileContainer.getBlockBlobClient(`${folder}/${filename}`)
@@ -58,6 +60,20 @@ const getDemographicsFiles = async () => {
     const filename = item.name.replace(`${storageConfig.demographicsFolder}/`, '')
     if (/\d{7}_\d*.json$/.test(filename)) {
       console.log(`Found item: ${filename}`)
+      fileList.push(filename)
+    }
+  }
+
+  return fileList
+}
+
+const getReturnFiles = async () => {
+  containersInitialised ?? await initialiseContainers()
+  const fileList = []
+  for await (const item of daxContainer.listBlobsFlat({ prefix: storageConfig.daxOutboundFolder })) {
+    const filename = item.name.replace(`${storageConfig.daxOutboundFolder}/`, '')
+    if (/^Claimant Update \d{4}-\d{2}-\d{2} \d{6}Ack\.xml$/.test(filename)) {
+      console.log(`Found return file: ${filename}`)
       fileList.push(filename)
     }
   }
@@ -94,10 +110,25 @@ const quarantineFile = async (filename, contName) => {
   return false
 }
 
+const archiveFile = async (filename, contName) => {
+  const sourceBlob = await getBlob(filename, contName)
+  const destinationBlob = await getBlob(filename, contName, `${storageConfig.daxOutboundFolder}/Archives`)
+  const copyResult = await (await destinationBlob.beginCopyFromURL(sourceBlob.url)).pollUntilDone()
+
+  if (copyResult.copyStatus === 'success') {
+    await sourceBlob.delete()
+    return true
+  }
+
+  return false
+}
+
 module.exports = {
   getDemographicsFiles,
+  getReturnFiles,
   downloadFile,
   uploadFile,
   deleteFile,
-  quarantineFile
+  quarantineFile,
+  archiveFile
 }

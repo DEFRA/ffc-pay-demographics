@@ -2,15 +2,15 @@ const city = require('./city')
 const country = require('./country')
 const frn = require('./frn')
 const sbi = require('./sbi')
-const street1 = require('./street-1')
-const street2 = require('./street-2')
-const street3 = require('./street-3')
-const street4 = require('./street-4')
 const postCode = require('./post-code')
 const addressRole = require('./address-role')
 const name = require('./name')
 const claimantGroup = require('./claimant-group')
 const email = require('./email')
+const flatName = require('./flat-name')
+const buildingNumberRange = require('./building-number-range')
+const buildingName = require('./building-name')
+const street = require('./street')
 
 module.exports = {
   header: {
@@ -22,8 +22,8 @@ module.exports = {
       rev: 12219496,
       person: null,
       organisation: {
-        name,
-        frn,
+        organisationName: name,
+        firmId: frn,
         claimantGroup,
         sbi
       },
@@ -73,20 +73,20 @@ module.exports = {
           partyId: 5108198,
           partyAddressId: 266655,
           pafOrganisationName: null,
-          flatName: null,
-          buildingNumberRange: null,
-          buildingName: null,
-          street: null,
+          flatName,
+          buildingNumberRange,
+          buildingName,
+          street,
           city,
           county: null,
           country,
           postalCode: postCode,
           uprn: null,
           addressType: addressRole,
-          address1: street1,
-          address2: street2,
-          address3: street3,
-          address4: street4,
+          address1: null,
+          address2: null,
+          address3: null,
+          address4: null,
           address5: null,
           doubleDependentLocality: null,
           dependentLocality: null,

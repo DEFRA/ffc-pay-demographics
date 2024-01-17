@@ -11,9 +11,9 @@ jest.mock('../../../app/processing/create-dax-update')
 const { createDaxUpdate: mockCreateDaxUpdate } = require('../../../app/processing/create-dax-update')
 
 jest.mock('../../../app/messaging')
-const { sendMessage: mockSendMessage } = require('../../../app/messaging')
+const { sendMessages: mockSendMessages } = require('../../../app/messaging')
 
-const content = require('../../mocks/file-content')
+const content = require('../../mocks/file-content-manual-address')
 const customerContent = require('../../mocks/customer-content')
 const daxData = require('../../mocks/dax-data')
 
@@ -33,7 +33,7 @@ describe('process file', () => {
     jest.spyOn(console, 'error').mockImplementation(() => { })
     mockDownloadFile.mockResolvedValue(JSON.stringify(content))
     mockCreateCustomerUpdate.mockReturnValue(customerContent)
-    mockSendMessage.mockReturnValue(true)
+    mockSendMessages.mockReturnValue(true)
     mockCreateDaxData.mockReturnValue(daxData)
     mockCreateDaxUpdate.mockReturnValue(daxUpdate)
     mockUploadFile.mockResolvedValue(true)
@@ -60,7 +60,7 @@ describe('process file', () => {
 
   test('should create customer update', async () => {
     await processFile(filename)
-    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0].organisation)
+    expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0].organisation, content.capparty[0].legacyIdentifier)
   })
 
   test('if create customer update fails, should throw error', async () => {
@@ -78,18 +78,18 @@ describe('process file', () => {
 
   test('should send customer update', async () => {
     await processFile(filename)
-    expect(mockSendMessage).toHaveBeenCalledWith(customerContent, CUSTOMER_MSG)
+    expect(mockSendMessages).toHaveBeenCalledWith(customerContent, CUSTOMER_MSG)
   })
 
   test('if sending customer update fails, should throw error', async () => {
-    mockSendMessage.mockRejectedValue(err)
+    mockSendMessages.mockRejectedValue(err)
     await processFile(filename)
     expect(console.error).toHaveBeenCalled()
     expect(console.error.mock.calls[0][0]).toBe(err)
   })
 
   test('if sending customer update fails, should quarantine file', async () => {
-    mockSendMessage.mockRejectedValue(err)
+    mockSendMessages.mockRejectedValue(err)
     await processFile(filename)
     expect(mockQuarantineFile).toHaveBeenCalled()
   })

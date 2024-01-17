@@ -2,12 +2,14 @@ const Joi = require('joi')
 
 const schema = Joi.object({
   enabled: Joi.boolean().default(true),
-  pollingInterval: Joi.number().integer().default(60000)
+  pollingInterval: Joi.number().integer().default(60000),
+  useEvents: Joi.boolean().default(true)
 })
 
 const config = {
   enabled: process.env.ENABLED,
-  pollingInterval: process.env.POLLING_INTERVAL
+  pollingInterval: process.env.POLLING_INTERVAL,
+  useEvents: process.env.USE_EVENTS
 }
 
 const result = schema.validate(config, {

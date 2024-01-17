@@ -14,6 +14,9 @@ const schema = Joi.object({
   },
   customerTopic: {
     address: Joi.string()
+  },
+  eventsTopic: {
+    address: Joi.string()
   }
 })
 
@@ -30,6 +33,9 @@ const config = {
   },
   customerTopic: {
     address: process.env.CUSTOMER_TOPIC_ADDRESS
+  },
+  eventsTopic: {
+    address: process.env.EVENTS_TOPIC_ADDRESS
   }
 }
 
@@ -43,8 +49,10 @@ if (result.error) {
 
 const demographicsTopic = { ...result.value.messageQueue, ...result.value.demographicsTopic }
 const customerTopic = { ...result.value.messageQueue, ...result.value.customerTopic }
+const eventsTopic = { ...result.value.messageQueue, ...result.value.eventsTopic }
 
 module.exports = {
   demographicsTopic,
-  customerTopic
+  customerTopic,
+  eventsTopic
 }

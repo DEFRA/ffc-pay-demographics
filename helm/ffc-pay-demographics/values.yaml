@@ -1,4 +1,4 @@
-environment: production
+ed environment: production
 environmentCode:
 name: ffc-pay-demographics
 namespace: ffc-pay
@@ -37,6 +37,8 @@ container:
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
   azureStorageUseConnectionString: false
+  eventsTopicAddress: ffc-pay-events
+  useEvents: true
 
 postgresService:
   postgresDb: ffc_pay_demographics

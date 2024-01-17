@@ -1,4 +1,4 @@
-const { sendMessage } = require('../messaging')
+const { sendMessages } = require('../messaging')
 const { downloadFile, uploadFile, deleteFile, quarantineFile } = require('../storage')
 const { CUSTOMER } = require('../constants/message-types')
 const { DEMOGRAPHICS, DAX } = require('../constants/containers')
@@ -14,11 +14,10 @@ const processFile = async (file) => {
     // confirmed by V1 team there will only be one party per file
     const parsedData = JSON.parse(data)
     const party = parsedData.capparty[0]
-    // if no organisation element - no update to be made
+    // if no organisation element - no updates to be made
     if (party.organisation) {
-      // need clarification on where we can recognise sbi / trader / vendor in a demographics update
-      const customerData = await createCustomerUpdate(party.organisation)
-      await sendMessage(customerData, CUSTOMER)
+      const customerMessages = await createCustomerUpdate(party.organisation, party.legacyIdentifier)
+      await sendMessages(customerMessages, CUSTOMER)
       const daxData = await createDaxData(party)
       const daxFile = createDaxUpdate(daxData)
       console.log(`Updated customer data received: ${daxFile}`)

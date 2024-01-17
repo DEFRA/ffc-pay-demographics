@@ -4,8 +4,7 @@ const { mapCountry } = require('./map-country')
 const { mapStreetAddress } = require('./map-street-address')
 
 const createDaxData = async (customer) => {
-  // currently unclear where frn comes from. so if check will not trigger.
-  const frn = customer.organisation.frn
+  const frn = customer.organisation.firmId
   // currently unclear where Claimant Group comes from.
   const group = await mapCustomerGroup(frn, customer.organisation.claimantGroup)
   const address = customer.address[0]
@@ -16,8 +15,7 @@ const createDaxData = async (customer) => {
     gsTraderEmail: customer.digitalContact[0].digitalAddress,
     gsTraderStatus: group ? (Number(group.isTrader) === 1 ? 'Active' : 'NotATrader') : null,
     vendGroup: group?.daxGroup,
-    // pending confirmation where name comes from
-    name: customer.organisation.name,
+    name: customer.organisation.organisationName,
     uniqueRecordDPPAddrRole: address.addressType,
     city: address.city,
     countryRegionId,

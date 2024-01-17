@@ -33,6 +33,7 @@ container:
   daxStorageConnectionString: myconnectionstring
   daxStorageShareName: demographics
   daxStorageFolder: dax
+  daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer

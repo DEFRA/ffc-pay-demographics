@@ -1,4 +1,4 @@
-ed environment: production
+environment: production
 environmentCode:
 name: ffc-pay-demographics
 namespace: ffc-pay

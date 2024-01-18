@@ -2,6 +2,7 @@ const { downloadFile, archiveFile, quarantineFile } = require('../storage')
 const { DAX } = require('../constants/containers')
 const { parseAcknowledgementFile } = require('./parse-acknowledgement-file')
 const { sendDemographicsFailureEvent } = require('../event')
+const { DEMOGRAPHICS_UPDATE_FAILED } = require('../constants/events')
 
 const processReturnFile = async (file) => {
   try {
@@ -18,7 +19,7 @@ const processReturnFile = async (file) => {
         }
       }
       error += '.'
-      await sendDemographicsFailureEvent(file, error)
+      await sendDemographicsFailureEvent(file, DEMOGRAPHICS_UPDATE_FAILED, error)
     }
     await archiveFile(file)
     console.log(`Processed return file: ${file}`)

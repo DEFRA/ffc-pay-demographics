@@ -14,6 +14,7 @@ const { processReturnFile } = require('../../../app/processing/process-return-fi
 
 const filename = require('../../mocks/return-filename')
 const { DAX } = require('../../../app/constants/containers')
+const { DEMOGRAPHICS_UPDATE_FAILED } = require('../../../app/constants/events')
 
 const err = new Error('These are not the droids you\'re looking for')
 
@@ -68,7 +69,7 @@ describe('process return file', () => {
 
   test('should send demographics failure event if failedFRNs has length >= 1', async () => {
     await processReturnFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, 'Demographics updates for the following FRNs have failed to be processed by DAX: 9876543210.')
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_UPDATE_FAILED, 'Demographics updates for the following FRNs have failed to be processed by DAX: 9876543210.')
   })
 
   test('should not send demographics failure event if failedFRNs has length 0', async () => {

@@ -1,13 +1,12 @@
 const config = require('../config/processing')
 const messageConfig = require('../config/messaging')
 const { EventPublisher } = require('ffc-pay-event-publisher')
-const { DEMOGRAPHICS_UPDATE_FAILED } = require('../constants/events')
 
-const sendDemographicsFailureEvent = async (filename, error) => {
+const sendDemographicsFailureEvent = async (filename, type, error) => {
   if (config.useEvents) {
     const event = {
       source: 'ffc-pay-demographics',
-      type: DEMOGRAPHICS_UPDATE_FAILED,
+      type,
       subject: filename,
       data: {
         message: error,

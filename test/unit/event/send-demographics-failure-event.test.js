@@ -18,7 +18,7 @@ const processingConfig = require('../../../app/config/processing')
 jest.mock('../../../app/config/messaging')
 const messagingConfig = require('../../../app/config/messaging')
 
-const { DEMOGRAPHICS_UPDATE_FAILED } = require('../../../app/constants/events')
+const { DEMOGRAPHICS_UPDATE_FAILED, DEMOGRAPHICS_PROCESSING_FAILED } = require('../../../app/constants/events')
 
 const sendDemographicsFailureEvent = require('../../../app/event/send-demographics-failure-event')
 
@@ -39,43 +39,48 @@ describe('send demographics failure event', () => {
 
   test('send events when events enabled ', async () => {
     processingConfig.useEvents = true
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent).toHaveBeenCalled()
   })
 
   test('should not send events when events disabled', async () => {
     processingConfig.useEvents = false
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent).not.toHaveBeenCalled()
   })
 
   test('should send event to events topic', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(MockEventPublisher.mock.calls[0][0]).toBe(messagingConfig.eventsTopic)
   })
 
   test('should raise an event with demographics source', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent.mock.calls[0][0].source).toBe('ffc-pay-demographics')
   })
 
+  test('should raise an event with DEMOGRAPHICS_PROCESSING_FAILED event type', async () => {
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_PROCESSING_FAILED, error)
+    expect(mockPublishEvent.mock.calls[0][0].type).toBe(DEMOGRAPHICS_PROCESSING_FAILED)
+  })
+
   test('should raise an event with DEMOGRAPHICS_UPDATE_FAILED event type', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent.mock.calls[0][0].type).toBe(DEMOGRAPHICS_UPDATE_FAILED)
   })
 
   test('should raise an event with filename as subject', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent.mock.calls[0][0].subject).toBe(filename)
   })
 
   test('should include error message in the event data', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent.mock.calls[0][0].data.message).toBe(error)
   })
 
   test('should include filename in the event data', async () => {
-    await sendDemographicsFailureEvent(filename, error)
+    await sendDemographicsFailureEvent(filename, DEMOGRAPHICS_UPDATE_FAILED, error)
     expect(mockPublishEvent.mock.calls[0][0].data.filename).toBe(filename)
   })
 })

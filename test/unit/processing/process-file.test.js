@@ -13,6 +13,9 @@ const { createDaxUpdate: mockCreateDaxUpdate } = require('../../../app/processin
 jest.mock('../../../app/messaging')
 const { sendMessages: mockSendMessages } = require('../../../app/messaging')
 
+jest.mock('../../../app/event')
+const { sendDemographicsFailureEvent: mockSendDemographicsFailureEvent } = require('../../../app/event')
+
 const content = require('../../mocks/file-content-manual-address')
 const customerContent = require('../../mocks/customer-content')
 const daxData = require('../../mocks/dax-data')
@@ -24,6 +27,7 @@ const filename = require('../../mocks/filename')
 const daxUpdate = require('../../mocks/dax-update')
 const outboundFilename = require('../../mocks/outbound-filename')
 const { DAX, DEMOGRAPHICS } = require('../../../app/constants/containers')
+const { DEMOGRAPHICS_PROCESSING_FAILED } = require('../../../app/constants/events')
 
 const err = new Error('These are not the droids you\'re looking for')
 
@@ -38,6 +42,7 @@ describe('process file', () => {
     mockCreateDaxUpdate.mockReturnValue(daxUpdate)
     mockUploadFile.mockResolvedValue(true)
     mockDeleteFile.mockResolvedValue(true)
+    mockSendDemographicsFailureEvent.mockReturnValue(true)
   })
 
   test('should download file from file storage', async () => {
@@ -58,6 +63,12 @@ describe('process file', () => {
     expect(mockQuarantineFile).toHaveBeenCalled()
   })
 
+  test('should send demographics failure event if download fails', async () => {
+    mockDownloadFile.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+  })
+
   test('should create customer update', async () => {
     await processFile(filename)
     expect(mockCreateCustomerUpdate).toHaveBeenCalledWith(content.capparty[0].organisation, content.capparty[0].legacyIdentifier)
@@ -74,6 +85,12 @@ describe('process file', () => {
     mockCreateCustomerUpdate.mockRejectedValue(err)
     await processFile(filename)
     expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
+  test('should send demographics failure event if create customer update fails', async () => {
+    mockCreateCustomerUpdate.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
   })
 
   test('should send customer update', async () => {
@@ -94,6 +111,12 @@ describe('process file', () => {
     expect(mockQuarantineFile).toHaveBeenCalled()
   })
 
+  test('should send demographics failure event if sending customer update fails', async () => {
+    mockSendMessages.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+  })
+
   test('should create dax data', async () => {
     await processFile(filename)
     expect(mockCreateDaxData).toHaveBeenCalledWith(content.capparty[0])
@@ -110,6 +133,12 @@ describe('process file', () => {
     mockCreateDaxData.mockRejectedValue(err)
     await processFile(filename)
     expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
+  test('should send demographics failure event if creating dax data fails', async () => {
+    mockCreateDaxData.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
   })
 
   test('should create dax update', async () => {
@@ -133,6 +162,12 @@ describe('process file', () => {
     mockUploadFile.mockRejectedValue(err)
     await processFile(filename)
     expect(mockQuarantineFile).toHaveBeenCalled()
+  })
+
+  test('should send demographics failure event if uploading file fails', async () => {
+    mockUploadFile.mockRejectedValue(err)
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
   })
 
   test('should delete file from file storage', async () => {

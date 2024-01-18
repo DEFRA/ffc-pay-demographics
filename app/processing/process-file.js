@@ -6,6 +6,8 @@ const { createCustomerUpdate } = require('./create-customer-update')
 const { createDaxData } = require('./create-dax-data')
 const { createDaxUpdate } = require('./create-dax-update')
 const { getOutboundFileName } = require('./get-outbound-file-name')
+const { sendDemographicsFailureEvent } = require('../event')
+const { DEMOGRAPHICS_PROCESSING_FAILED } = require('../constants/events')
 
 const processFile = async (file) => {
   try {
@@ -31,6 +33,7 @@ const processFile = async (file) => {
     console.error(err)
     console.log(`Error occurred processing file: ${file}`)
     await quarantineFile(file, DEMOGRAPHICS)
+    await sendDemographicsFailureEvent(file, DEMOGRAPHICS_PROCESSING_FAILED, err)
   }
 }
 

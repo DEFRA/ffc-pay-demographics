@@ -10,15 +10,7 @@ const processReturnFile = async (file) => {
     const xmlData = await downloadFile(file, DAX)
     const output = await parseAcknowledgementFile(xmlData)
     if (output.failedFRNs[0]) {
-      let error = 'Demographics updates for the following FRNs have failed to be processed by DAX: '
-      for (let i = 0; i < output.failedFRNs.length; i++) {
-        if (i === 0) {
-          error += output.failedFRNs[i]
-        } else {
-          error += `, ${output.failedFRNs[i]}`
-        }
-      }
-      error += '.'
+      const error = 'Demographics updates for the following FRNs have failed to be processed by DAX: ' + output.failedFRNs.map((frn, index) => (index === 0 ? frn : `, ${frn}`)).join('')
       await sendDemographicsFailureEvent(file, DEMOGRAPHICS_UPDATE_FAILED, error)
     }
     await archiveFile(file)

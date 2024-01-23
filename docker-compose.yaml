@@ -6,6 +6,7 @@ services:
     image: ffc-pay-demographics
     container_name: ffc-pay-demographics
     depends_on:
+      - ffc-pay-demographics-postgres
       - ffc-pay-demographics-azurite
     environment:
       APPINSIGHTS_CLOUDROLE: ffc-pay-demographics-local
@@ -16,6 +17,7 @@ services:
       MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
       MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
       MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}
+      EVENTS_TOPIC_ADDRESS: ${EVENTS_TOPIC_ADDRESS:-ffc-pay-events}${MESSAGE_QUEUE_SUFFIX}
       DEMOGRAPHICS_TOPIC_ADDRESS: ${DEMOGRAPHICS_TOPIC_ADDRESS:-ffc-pay-demographics}${MESSAGE_QUEUE_SUFFIX}
       CUSTOMER_TOPIC_ADDRESS: ${CUSTOMER_TOPIC_ADDRESS:-ffc-pay-customer}${MESSAGE_QUEUE_SUFFIX}
       DEMOGRAPHICS_STORAGE_CONNECTION_STRING: ${DEMOGRAPHICS_STORAGE_CONNECTION_STRING}
@@ -23,9 +25,22 @@ services:
       DEMOGRAPHICS_STORAGE_FOLDER_NAME: ${DEMOGRAPHICS_STORAGE_FOLDER_NAME:-outbound}
       DAX_STORAGE_CONNECTION_STRING: ${DAX_STORAGE_CONNECTION_STRING}
       DAX_STORAGE_SHARE_NAME: ${DAX_STORAGE_SHARE_NAME:-demographics}
-      DAX_STORAGE_FOLDER_NAME: ${DAX_STORAGE_FOLDER_NAME:-dax}
+      DAX_STORAGE_FOLDER_NAME: ${DAX_STORAGE_FOLDER_NAME:-inbound}
+      DAX_STORAGE_OUTBOUND_FOLDER_NAME: ${DAX_STORAGE_OUTBOUND_FOLDER_NAME:-outbound}
       POLLING_INTERVAL: ${POLLING_INTERVAL:-10000}
+      POSTGRES_DB: ffc_pay_demographics
+      POSTGRES_HOST: ${POSTGRES_HOST:-ffc-pay-demographics-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SCHEMA_PASSWORD:-ppp}
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA_NAME: ${POSTGRES_SCHEMA_NAME:-public}
+      POSTGRES_USERNAME: ${POSTGRES_SCHEMA_USERNAME:-postgres}
 
+  ffc-pay-demographics-postgres:
+    image: postgres:11.4-alpine
+    environment:
+      POSTGRES_DB: ffc_pay_demographics
+      POSTGRES_PASSWORD: ppp
+      POSTGRES_USERNAME: postgres
   ffc-pay-demographics-azurite:
     image: mcr.microsoft.com/azure-storage/azurite:3.23.0
     command: "azurite-blob --loose --blobHost 0.0.0.0"

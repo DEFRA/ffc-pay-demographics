@@ -8,6 +8,7 @@ const schema = Joi.object({
   daxContainer: Joi.string().required(),
   demographicsFolder: Joi.string().required(),
   daxFolder: Joi.string().required(),
+  daxOutboundFolder: Joi.string().required(),
   archiveFolder: Joi.string().required(),
   useConnectionStr: Joi.boolean().default(false),
   createContainers: Joi.boolean().default(false)
@@ -21,6 +22,7 @@ const config = {
   daxContainer: 'dax',
   demographicsFolder: process.env.DEMOGRAPHICS_STORAGE_FOLDER_NAME,
   daxFolder: process.env.DAX_STORAGE_FOLDER_NAME,
+  daxOutboundFolder: process.env.DAX_STORAGE_OUTBOUND_FOLDER_NAME,
   archiveFolder: 'archive',
   useConnectionStr: process.env.AZURE_STORAGE_USE_CONNECTION_STRING,
   createContainers: process.env.AZURE_STORAGE_CREATE_CONTAINERS

@@ -1,5 +1,5 @@
 const { SOURCE } = require('../../../app/constants/source')
-const { DEMOGRAPHICS } = require('../../../app/constants/types')
+const { DEMOGRAPHICS } = require('../../../app/constants/message-types')
 
 const { createMessage } = require('../../../app/messaging/create-message')
 

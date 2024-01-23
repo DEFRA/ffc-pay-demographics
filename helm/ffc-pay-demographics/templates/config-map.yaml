@@ -12,12 +12,20 @@ data:
   DAX_STORAGE_CONNECTION_STRING: {{ quote .Values.container.daxStorageConnectionString }}
   DAX_STORAGE_SHARE_NAME: {{ quote .Values.container.daxStorageShareName }}
   DAX_STORAGE_FOLDER_NAME: {{ quote .Values.container.daxStorageFolder }}
+  DAX_STORAGE_OUTBOUND_FOLDER_NAME: {{ quote .Values.container.daxStorageOutboundFolder }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
   CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}
+  EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}-{{ .Values.environmentCode }}
   {{ else }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ quote .Values.container.demographicsTopicAddress }}
   CUSTOMER_TOPIC_ADDRESS: {{ quote .Values.container.customerTopicAddress }}
+  EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}
   {{- end }}
+  POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
+  POSTGRES_HOST: {{ quote .Values.postgresService.postgresqlHost }}
+  POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}
+  POSTGRES_SCHEMA_NAME: {{ quote .Values.postgresService.postgresSchema }}
+  USE_EVENTS: {{ quote .Values.container.useEvents }}
 {{- end -}}

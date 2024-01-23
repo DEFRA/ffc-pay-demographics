@@ -33,10 +33,20 @@ container:
   daxStorageConnectionString: myconnectionstring
   daxStorageShareName: demographics
   daxStorageFolder: dax
+  daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
   azureStorageUseConnectionString: false
+  eventsTopicAddress: ffc-pay-events
+  useEvents: true
+
+postgresService:
+  postgresDb: ffc_pay_demographics
+  postgresqlHost: ffc-pay-demographics-postgres
+  postgresPort: 5432
+  postgresSchema: public
+  postgresUser: postgres
 
 aadPodIdentity: true
 

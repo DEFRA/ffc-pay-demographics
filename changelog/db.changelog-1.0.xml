@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+  <changeSet author="Sam Plackett" id="1">
+    <tagDatabase tag="v0.0.0" />
+  </changeSet>
+  <changeSet author="Sam Plackett" id="2">
+    <tagDatabase tag="v1.0.0" />
+  </changeSet>
+  <changeSet author="Sam Plackett" id="3">
+    <createTable tableName="claimantExceptions">
+      <column autoIncrement="false" name="claimantExceptionId" type="SMALLINT">
+        <constraints nullable="true" primaryKey="true" primaryKeyName="claimantException_pkey"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="frn" type="VARCHAR(10)"/>
+      <column name="claimantGroup" type="VARCHAR(10)"/>
+      <column name="isTrader" type="BIT(1)"/>
+    </createTable>
+    <createTable tableName="claimantGroups">
+      <column autoIncrement="false" name="claimantGroupId" type="SMALLINT">
+        <constraints nullable="true" primaryKey="true" primaryKeyName="claimantGroup_pkey"/>
+      </column>
+      <column name="rpGroup" type="VARCHAR(255)"/>
+      <column name="daxGroup" type="VARCHAR(10)"/>
+      <column name="isTrader" type="BIT(1)"/>
+    </createTable>
+    <createTable tableName="countries">
+      <column autoIncrement="false" name="countryId" type="SMALLINT">
+        <constraints nullable="true" primaryKey="true" primaryKeyName="country_pkey"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="countryCode" type="VARCHAR(3)"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

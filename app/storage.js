@@ -1,6 +1,7 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
+const { DEMOGRAPHICS } = require('./constants/containers')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
@@ -37,14 +38,16 @@ const initialiseFolders = async () => {
   await demographicsClient.upload(placeHolderText, placeHolderText.length)
   const daxClient = daxContainer.getBlockBlobClient(`${storageConfig.daxFolder}/default.txt`)
   await daxClient.upload(placeHolderText, placeHolderText.length)
+  const daxOutboundClient = daxContainer.getBlockBlobClient(`${storageConfig.daxOutboundFolder}/default.txt`)
+  await daxOutboundClient.upload(placeHolderText, placeHolderText.length)
   foldersInitialised = true
   console.log('Folders ready')
 }
 
 const getBlob = async (filename, contName, folder) => {
-  const fileContainer = contName === 'demographics' ? demographicsContainer : daxContainer
+  const fileContainer = contName === DEMOGRAPHICS ? demographicsContainer : daxContainer
   if (!folder) {
-    folder = contName === 'demographics' ? storageConfig.demographicsFolder : storageConfig.daxFolder
+    folder = contName === DEMOGRAPHICS ? storageConfig.demographicsFolder : storageConfig.daxOutboundFolder
   }
   containersInitialised ?? await initialiseContainers()
   return fileContainer.getBlockBlobClient(`${folder}/${filename}`)
@@ -52,14 +55,26 @@ const getBlob = async (filename, contName, folder) => {
 
 const getDemographicsFiles = async () => {
   containersInitialised ?? await initialiseContainers()
-
   const fileList = []
   for await (const item of demographicsContainer.listBlobsFlat({ prefix: storageConfig.demographicsFolder })) {
-    console.log(`Found item: ${item.name}`)
+    const filename = item.name.replace(`${storageConfig.demographicsFolder}/`, '')
+    if (/\d{7}_\d*.json$/.test(filename)) {
+      console.log(`Found item: ${filename}`)
+      fileList.push(filename)
+    }
+  }
 
-    // Awaiting confirmation on file naming convention
-    if (item.kind === 'file' && /^.*.json$/.test(item.name)) {
-      fileList.push(item.name)
+  return fileList
+}
+
+const getReturnFiles = async () => {
+  containersInitialised ?? await initialiseContainers()
+  const fileList = []
+  for await (const item of daxContainer.listBlobsFlat({ prefix: storageConfig.daxOutboundFolder })) {
+    const filename = item.name.replace(`${storageConfig.daxOutboundFolder}/`, '')
+    if (/^Claimant Update \d{4}-\d{2}-\d{2} \d{6}Ack\.xml$/.test(filename)) {
+      console.log(`Found return file: ${filename}`)
+      fileList.push(filename)
     }
   }
 
@@ -82,9 +97,38 @@ const deleteFile = async (filename, contName) => {
   await blobClient.delete()
 }
 
+const quarantineFile = async (filename, contName) => {
+  const sourceBlob = await getBlob(filename, contName)
+  const destinationBlob = await getBlob(filename, contName, 'quarantine')
+  const copyResult = await (await destinationBlob.beginCopyFromURL(sourceBlob.url)).pollUntilDone()
+
+  if (copyResult.copyStatus === 'success') {
+    await sourceBlob.delete()
+    return true
+  }
+
+  return false
+}
+
+const archiveFile = async (filename, contName) => {
+  const sourceBlob = await getBlob(filename, contName)
+  const destinationBlob = await getBlob(filename, contName, `${storageConfig.daxOutboundFolder}/Archives`)
+  const copyResult = await (await destinationBlob.beginCopyFromURL(sourceBlob.url)).pollUntilDone()
+
+  if (copyResult.copyStatus === 'success') {
+    await sourceBlob.delete()
+    return true
+  }
+
+  return false
+}
+
 module.exports = {
   getDemographicsFiles,
+  getReturnFiles,
   downloadFile,
   uploadFile,
-  deleteFile
+  deleteFile,
+  quarantineFile,
+  archiveFile
 }

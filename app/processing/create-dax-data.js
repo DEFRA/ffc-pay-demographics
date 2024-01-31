@@ -5,8 +5,8 @@ const { mapStreetAddress } = require('./map-street-address')
 
 const createDaxData = async (customer) => {
   const frn = customer.organisation.firmId
-  // currently unclear where Claimant Group comes from.
-  const group = await mapCustomerGroup(frn, customer.organisation.claimantGroup)
+  // where TL uses the Claimant Group directly, we will receive a corresponding business type ID
+  const group = await mapCustomerGroup(frn, customer.organisation.businessTypeId)
   const address = customer.address[0]
   const countryRegionId = await mapCountry(address.country)
   const street = await mapStreetAddress(address)

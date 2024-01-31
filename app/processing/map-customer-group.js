@@ -1,6 +1,6 @@
 const db = require('../data')
 
-const mapCustomerGroup = async (frn, rpGroup) => {
+const mapCustomerGroup = async (frn, businessTypeId) => {
   if (frn) {
     const exception = await db.claimantException.findOne({ where: { frn } })
     if (exception) {
@@ -10,8 +10,8 @@ const mapCustomerGroup = async (frn, rpGroup) => {
       }
     }
   }
-  if (rpGroup) {
-    const group = await db.claimantGroup.findOne({ where: { rpGroup } })
+  if (businessTypeId) {
+    const group = await db.claimantGroup.findOne({ where: { businessTypeId } })
     if (group) {
       return {
         daxGroup: group.daxGroup,

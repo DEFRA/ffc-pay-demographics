@@ -5,12 +5,12 @@ const sbi = require('./sbi')
 const postCode = require('./post-code')
 const addressRole = require('./address-role')
 const name = require('./name')
-const claimantGroup = require('./claimant-group')
 const email = require('./email')
 const flatName = require('./flat-name')
 const buildingNumberRange = require('./building-number-range')
 const buildingName = require('./building-name')
 const street = require('./street')
+const businessTypeId = require('./business-type-id')
 
 module.exports = {
   header: {
@@ -24,7 +24,7 @@ module.exports = {
       organisation: {
         organisationName: name,
         firmId: frn,
-        claimantGroup,
+        businessTypeId,
         sbi
       },
       phoneContact: [

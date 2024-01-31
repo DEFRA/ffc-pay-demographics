@@ -23,8 +23,8 @@ const city = require('../../mocks/city')
 const postCode = require('../../mocks/post-code')
 const name = require('../../mocks/name')
 const frn = require('../../mocks/frn')
-const claimantGroup = require('../../mocks/claimant-group')
 const email = require('../../mocks/email')
+const businessTypeId = require('../../mocks/business-type-id')
 
 describe('create dax data', () => {
   const customer = fileContent.capparty[0]
@@ -37,7 +37,7 @@ describe('create dax data', () => {
 
   test('should obtain vendGroup and isTrader', async () => {
     await createDaxData(customer)
-    expect(mockMapCustomerGroup).toHaveBeenCalledWith(frn, claimantGroup)
+    expect(mockMapCustomerGroup).toHaveBeenCalledWith(frn, businessTypeId)
   })
 
   test('should obtain country code', async () => {

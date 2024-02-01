@@ -41,7 +41,7 @@ describe('map customer group', () => {
 
   test('should get correct isTrader if present in exceptions db', async () => {
     const result = await mapCustomerGroup(frn, businessTypeId)
-    expect(Number(result.isTrader)).toBe(isTrader)
+    expect(result.isTrader).toBe(isTrader)
   })
 
   test('should get correct daxGroup if not present in exceptions db, present in groups', async () => {
@@ -51,7 +51,7 @@ describe('map customer group', () => {
 
   test('should get correct isTrader if not present in exceptions db, present in groups', async () => {
     const result = await mapCustomerGroup('9876543210', businessTypeId)
-    expect(Number(result.isTrader)).toBe(isTrader)
+    expect(result.isTrader).toBe(isTrader)
   })
 
   test('should return null for non-existent exception and group', async () => {

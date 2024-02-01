@@ -14,126 +14,126 @@
       <column name="businessTypeId" value="101402" />
       <column name="rpGroup" value="Agency/Agent" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="2" />
       <column name="businessTypeId" value="101404" />
       <column name="rpGroup" value="Farmer" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="3" />
       <column name="businessTypeId" value="101410" />
       <column name="rpGroup" value="Commons or Graziers Association" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="4" />
       <column name="businessTypeId" value="101413" />
       <column name="rpGroup" value="Education Provider/Training" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="5" />
       <column name="businessTypeId" value="101414" />
       <column name="rpGroup" value="Trader only organisation" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="1" />
+      <column name="isTrader" value="true" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="6" />
       <column name="businessTypeId" value="101417" />
       <column name="rpGroup" value="Forestry/Woodland Owner" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="7" />
       <column name="businessTypeId" value="101418" />
       <column name="rpGroup" value="Central/Local Government" />
       <column name="daxGroup" value="OGDL" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="8" />
       <column name="businessTypeId" value="101419" />
       <column name="rpGroup" value="Horticultural business" />
       <column name="daxGroup" value="SCUST" />
-      <column name="isTrader" value="0" />
+      <column name="isTrader" value="false" />
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="9" />
       <column name="businessTypeId" value="101421"/>
       <column name="rpGroup" value="Intervention/Private Storage"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="10" />
       <column name="businessTypeId" value="101422"/>
       <column name="rpGroup" value="Land Manager"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="11" />
       <column name="businessTypeId" value="101423"/>
       <column name="rpGroup" value="Leader Group"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="12" />
       <column name="businessTypeId" value="101426"/>
       <column name="rpGroup" value="Official Receiver/Administrator"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="13" />
       <column name="businessTypeId" value="101437"/>
       <column name="rpGroup" value="Rural Community/Voluntary/Third sector organisation"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="14" />
       <column name="businessTypeId" value="101439"/>
       <column name="rpGroup" value="Tourism"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="15" />
       <column name="businessTypeId" value="101443"/>
       <column name="rpGroup" value="Not Specified"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="16" />
       <column name="businessTypeId" value="101444"/>
       <column name="rpGroup" value="Meat Industry"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="17" />
       <column name="businessTypeId" value="101445"/>
       <column name="rpGroup" value="Hobby livestock keeper"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
     <insert tableName="claimantGroups">
       <column name="claimantGroupId" value="18" />
       <column name="businessTypeId" value="101446"/>
       <column name="rpGroup" value="Professional livestock keeper"/>
       <column name="daxGroup" value="SCUST"/>
-      <column name="isTrader" value="0"/>
+      <column name="isTrader" value="false"/>
     </insert>
   </changeSet>
 </databaseChangeLog>

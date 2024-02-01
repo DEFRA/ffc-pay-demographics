@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     businessTypeId: DataTypes.INTEGER,
     rpGroup: DataTypes.STRING,
     daxGroup: DataTypes.STRING,
-    isTrader: DataTypes.SMALLINT
+    isTrader: DataTypes.BOOLEAN
   },
   {
     tableName: 'claimantGroups',

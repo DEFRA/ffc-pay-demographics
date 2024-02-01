@@ -13,7 +13,7 @@ const createDaxData = async (customer) => {
   const customerUpdate = {
     accountNum: frn,
     gsTraderEmail: customer.digitalContact[0].digitalAddress,
-    gsTraderStatus: group ? (Number(group.isTrader) === 1 ? 'Active' : 'NotATrader') : null,
+    gsTraderStatus: group ? (group.isTrader ? 'Active' : 'NotATrader') : null,
     vendGroup: group?.daxGroup,
     name: customer.organisation.organisationName,
     uniqueRecordDPPAddrRole: address.addressType,

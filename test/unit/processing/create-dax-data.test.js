@@ -60,13 +60,13 @@ describe('create dax data', () => {
     expect(result.gsTraderEmail).toBe(email)
   })
 
-  test('should return gsTraderStatus as Active if isTrader is 1', async () => {
+  test('should return gsTraderStatus as Active if isTrader is true', async () => {
     const result = await createDaxData(customer)
     expect(result.gsTraderStatus).toBe('Active')
   })
 
-  test('should return gsTraderStatus as NotATrader if isTrader is 0', async () => {
-    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: 0 })
+  test('should return gsTraderStatus as NotATrader if isTrader is false', async () => {
+    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: false })
     const result = await createDaxData(customer)
     expect(result.gsTraderStatus).toBe('NotATrader')
   })

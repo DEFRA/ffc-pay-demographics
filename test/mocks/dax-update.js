@@ -19,7 +19,7 @@ module.exports = `
         <VendTable>
           <AccountNum>${frn}</AccountNum>
           <GSTraderEmail>${email}</GSTraderEmail>
-          <GSTraderStatus>${Number(isTrader) === 1 ? 'Active' : 'NotATrader'}</GSTraderStatus>
+          <GSTraderStatus>${isTrader ? 'Active' : 'NotATrader'}</GSTraderStatus>
           <Currency>GBP</Currency>
           <VendGroup>${vendGroup}</VendGroup>
           

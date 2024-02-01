@@ -9,10 +9,10 @@ const street4 = require('./address-4')
 const postCode = require('./post-code')
 const addressRole = require('./address-role')
 const name = require('./name')
-const claimantGroup = require('./claimant-group')
 const email = require('./email')
 const vendor = require('./vendor')
 const trader = require('./trader')
+const businessTypeId = require('./business-type-id')
 
 module.exports = {
   header: {
@@ -24,14 +24,13 @@ module.exports = {
       rev: 12219496,
       person: null,
       organisation: {
-        claimantGroup,
         rev: 12219496,
         partyId: 5108198,
         organisationName: name,
         sbi,
         taxRegistrationNumber: '180597090',
         legalStatusTypeId: 102111,
-        businessTypeId: 101414,
+        businessTypeId,
         updateType: 'U',
         firmId: frn,
         vendornumber: vendor,

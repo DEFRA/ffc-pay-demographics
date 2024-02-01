@@ -1,9 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const claimantGroup = sequelize.define('claimantGroup', {
     claimantGroupId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    businessTypeId: DataTypes.INTEGER,
     rpGroup: DataTypes.STRING,
     daxGroup: DataTypes.STRING,
-    isTrader: DataTypes.SMALLINT
+    isTrader: DataTypes.BOOLEAN
   },
   {
     tableName: 'claimantGroups',

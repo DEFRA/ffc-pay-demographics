@@ -14,7 +14,7 @@
       <column name="name" type="VARCHAR(255)"/>
       <column name="frn" type="VARCHAR(10)"/>
       <column name="claimantGroup" type="VARCHAR(10)"/>
-      <column name="isTrader" type="BIT(1)"/>
+      <column name="isTrader" type="BOOLEAN"/>
     </createTable>
     <createTable tableName="claimantGroups">
       <column autoIncrement="false" name="claimantGroupId" type="SMALLINT">
@@ -22,7 +22,7 @@
       </column>
       <column name="rpGroup" type="VARCHAR(255)"/>
       <column name="daxGroup" type="VARCHAR(10)"/>
-      <column name="isTrader" type="BIT(1)"/>
+      <column name="isTrader" type="BOOLEAN"/>
     </createTable>
     <createTable tableName="countries">
       <column autoIncrement="false" name="countryId" type="SMALLINT">

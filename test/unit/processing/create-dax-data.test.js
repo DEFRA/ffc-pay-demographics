@@ -23,8 +23,8 @@ const city = require('../../mocks/city')
 const postCode = require('../../mocks/post-code')
 const name = require('../../mocks/name')
 const frn = require('../../mocks/frn')
-const claimantGroup = require('../../mocks/claimant-group')
 const email = require('../../mocks/email')
+const businessTypeId = require('../../mocks/business-type-id')
 
 describe('create dax data', () => {
   const customer = fileContent.capparty[0]
@@ -37,7 +37,7 @@ describe('create dax data', () => {
 
   test('should obtain vendGroup and isTrader', async () => {
     await createDaxData(customer)
-    expect(mockMapCustomerGroup).toHaveBeenCalledWith(frn, claimantGroup)
+    expect(mockMapCustomerGroup).toHaveBeenCalledWith(frn, businessTypeId)
   })
 
   test('should obtain country code', async () => {
@@ -60,13 +60,13 @@ describe('create dax data', () => {
     expect(result.gsTraderEmail).toBe(email)
   })
 
-  test('should return gsTraderStatus as Active if isTrader is 1', async () => {
+  test('should return gsTraderStatus as Active if isTrader is true', async () => {
     const result = await createDaxData(customer)
     expect(result.gsTraderStatus).toBe('Active')
   })
 
-  test('should return gsTraderStatus as NotATrader if isTrader is 0', async () => {
-    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: 0 })
+  test('should return gsTraderStatus as NotATrader if isTrader is false', async () => {
+    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: false })
     const result = await createDaxData(customer)
     expect(result.gsTraderStatus).toBe('NotATrader')
   })

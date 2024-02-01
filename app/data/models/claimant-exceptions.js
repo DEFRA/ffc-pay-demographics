@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     frn: DataTypes.STRING,
     claimantGroup: DataTypes.STRING,
-    isTrader: DataTypes.SMALLINT
+    isTrader: DataTypes.BOOLEAN
   },
   {
     tableName: 'claimantExceptions',

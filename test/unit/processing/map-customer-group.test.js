@@ -1,5 +1,6 @@
 const db = require('../../../app/data')
 const { mapCustomerGroup } = require('../../../app/processing/map-customer-group')
+const businessTypeId = require('../../mocks/business-type-id')
 const frn = require('../../mocks/frn')
 const isTrader = require('../../mocks/is-trader')
 
@@ -19,6 +20,7 @@ describe('map customer group', () => {
     }
     grpDB = {
       claimantGroupId: 1,
+      businessTypeId,
       rpGroup: name,
       daxGroup: 'ABCD',
       isTrader
@@ -33,27 +35,27 @@ describe('map customer group', () => {
   })
 
   test('should get correct daxGroup if present in exceptions db', async () => {
-    const result = await mapCustomerGroup(frn, name)
+    const result = await mapCustomerGroup(frn, businessTypeId)
     expect(result.daxGroup).toBe('ABCD')
   })
 
   test('should get correct isTrader if present in exceptions db', async () => {
-    const result = await mapCustomerGroup(frn, name)
-    expect(Number(result.isTrader)).toBe(isTrader)
+    const result = await mapCustomerGroup(frn, businessTypeId)
+    expect(result.isTrader).toBe(isTrader)
   })
 
   test('should get correct daxGroup if not present in exceptions db, present in groups', async () => {
-    const result = await mapCustomerGroup('9876543210', name)
+    const result = await mapCustomerGroup('9876543210', businessTypeId)
     expect(result.daxGroup).toBe('ABCD')
   })
 
   test('should get correct isTrader if not present in exceptions db, present in groups', async () => {
-    const result = await mapCustomerGroup('9876543210', name)
-    expect(Number(result.isTrader)).toBe(isTrader)
+    const result = await mapCustomerGroup('9876543210', businessTypeId)
+    expect(result.isTrader).toBe(isTrader)
   })
 
   test('should return null for non-existent exception and group', async () => {
-    const result = await mapCustomerGroup('9876543210', 'Johnnys Big Store')
+    const result = await mapCustomerGroup('9876543210', '95292')
     expect(result).toBe(null)
   })
 })

@@ -15,7 +15,7 @@ const vendGroup = require('./vend-group')
 module.exports = {
   accountNum: frn,
   gsTraderEmail: email,
-  gsTraderStatus: Number(isTrader) === 1 ? 'Active' : 'NotATrader',
+  gsTraderStatus: isTrader ? 'Active' : 'NotATrader',
   vendGroup,
   name,
   uniqueRecordDPPAddrRole: addressRole,

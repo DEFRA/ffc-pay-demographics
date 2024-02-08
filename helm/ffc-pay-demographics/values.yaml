@@ -29,7 +29,6 @@ container:
   azureStorageAccountName: ffcpay
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
-  demographicsStorageFolder: outbound
   daxStorageConnectionString: myconnectionstring
   daxStorageShareName: demographics
   daxStorageFolder: dax

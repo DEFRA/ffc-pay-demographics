@@ -8,7 +8,6 @@ data:
   AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
   DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
   DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
-  DEMOGRAPHICS_STORAGE_FOLDER_NAME: {{ quote .Values.container.demographicsStorageFolder }}
   DAX_STORAGE_CONNECTION_STRING: {{ quote .Values.container.daxStorageConnectionString }}
   DAX_STORAGE_SHARE_NAME: {{ quote .Values.container.daxStorageShareName }}
   DAX_STORAGE_FOLDER_NAME: {{ quote .Values.container.daxStorageFolder }}

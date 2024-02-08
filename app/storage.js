@@ -44,8 +44,8 @@ const initialiseFolders = async () => {
 
 const getBlob = async (filename, contName, folder) => {
   const fileContainer = contName === DEMOGRAPHICS ? demographicsContainer : daxContainer
-  if (!folder) {
-    folder = contName === DAX ? storageConfig.daxOutboundFolder : null
+  if (!folder && contName === DAX) {
+    folder = storageConfig.daxOutboundFolder
   }
   containersInitialised ?? await initialiseContainers()
   return folder ? fileContainer.getBlockBlobClient(`${folder}/${filename}`) : fileContainer.getBlockBlobClient(filename)

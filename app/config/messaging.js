@@ -18,8 +18,7 @@ const schema = Joi.object({
   updatesSubscription: {
     address: Joi.string(),
     topic: Joi.string(),
-    type: Joi.string().allow('subscription'),
-    numberOfReceivers: Joi.number().default(1)
+    type: Joi.string().allow('subscription')
   }
 })
 
@@ -40,8 +39,7 @@ const config = {
   updatesSubscription: {
     address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,
     topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
-    type: 'subscription',
-    numberOfReceivers: process.env.DEMOGRAPHICS_SUBSCRIPTION_RECEIVERS
+    type: 'subscription'
   }
 }
 

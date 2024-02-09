@@ -1,7 +1,7 @@
 const { DefaultAzureCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
-const { DEMOGRAPHICS } = require('./constants/containers')
+const { DEMOGRAPHICS, DAX } = require('./constants/containers')
 let blobServiceClient
 let containersInitialised
 let foldersInitialised
@@ -34,8 +34,6 @@ const initialiseContainers = async () => {
 const initialiseFolders = async () => {
   console.log('Making sure folders exist')
   const placeHolderText = 'Placeholder'
-  const demographicsClient = demographicsContainer.getBlockBlobClient(`${storageConfig.demographicsFolder}/default.txt`)
-  await demographicsClient.upload(placeHolderText, placeHolderText.length)
   const daxClient = daxContainer.getBlockBlobClient(`${storageConfig.daxFolder}/default.txt`)
   await daxClient.upload(placeHolderText, placeHolderText.length)
   const daxOutboundClient = daxContainer.getBlockBlobClient(`${storageConfig.daxOutboundFolder}/default.txt`)
@@ -46,21 +44,20 @@ const initialiseFolders = async () => {
 
 const getBlob = async (filename, contName, folder) => {
   const fileContainer = contName === DEMOGRAPHICS ? demographicsContainer : daxContainer
-  if (!folder) {
-    folder = contName === DEMOGRAPHICS ? storageConfig.demographicsFolder : storageConfig.daxOutboundFolder
+  if (!folder && contName === DAX) {
+    folder = storageConfig.daxOutboundFolder
   }
   containersInitialised ?? await initialiseContainers()
-  return fileContainer.getBlockBlobClient(`${folder}/${filename}`)
+  return folder ? fileContainer.getBlockBlobClient(`${folder}/${filename}`) : fileContainer.getBlockBlobClient(filename)
 }
 
 const getDemographicsFiles = async () => {
   containersInitialised ?? await initialiseContainers()
   const fileList = []
-  for await (const item of demographicsContainer.listBlobsFlat({ prefix: storageConfig.demographicsFolder })) {
-    const filename = item.name.replace(`${storageConfig.demographicsFolder}/`, '')
-    if (/\d{7}_\d*.json$/.test(filename)) {
-      console.log(`Found item: ${filename}`)
-      fileList.push(filename)
+  for await (const item of demographicsContainer.listBlobsFlat()) {
+    if (/\d{7}_\d*.json$/.test(item.name)) {
+      console.log(`Found item: ${item.name}`)
+      fileList.push(item.name)
     }
   }
 

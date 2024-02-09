@@ -26,16 +26,17 @@ container:
   limitMemory: 100Mi
   limitCpu: 100m
   enabled: true
+  daxEnabled: false
   azureStorageAccountName: ffcpay
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
-  demographicsStorageFolder: outbound
   daxStorageConnectionString: myconnectionstring
   daxStorageShareName: demographics
   daxStorageFolder: dax
   daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
   demographicsTopicAddress: ffc-pay-demographics
+  demographicsSubscriptionAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
   azureStorageUseConnectionString: false
   eventsTopicAddress: ffc-pay-events

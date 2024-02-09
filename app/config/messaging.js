@@ -9,14 +9,16 @@ const schema = Joi.object({
     useCredentialChain: Joi.bool().default(false),
     appInsights: Joi.object()
   },
-  demographicsTopic: {
-    address: Joi.string()
-  },
   customerTopic: {
     address: Joi.string()
   },
   eventsTopic: {
     address: Joi.string()
+  },
+  updatesSubscription: {
+    address: Joi.string(),
+    topic: Joi.string(),
+    type: Joi.string().allow('subscription')
   }
 })
 
@@ -28,14 +30,16 @@ const config = {
     useCredentialChain: process.env.NODE_ENV === PRODUCTION,
     appInsights: process.env.NODE_ENV === PRODUCTION ? require('applicationinsights') : undefined
   },
-  demographicsTopic: {
-    address: process.env.DEMOGRAPHICS_TOPIC_ADDRESS
-  },
   customerTopic: {
     address: process.env.CUSTOMER_TOPIC_ADDRESS
   },
   eventsTopic: {
     address: process.env.EVENTS_TOPIC_ADDRESS
+  },
+  updatesSubscription: {
+    address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,
+    topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
+    type: 'subscription'
   }
 }
 
@@ -47,12 +51,12 @@ if (result.error) {
   throw new Error(`The messaging config is invalid. ${result.error.message}`)
 }
 
-const demographicsTopic = { ...result.value.messageQueue, ...result.value.demographicsTopic }
 const customerTopic = { ...result.value.messageQueue, ...result.value.customerTopic }
 const eventsTopic = { ...result.value.messageQueue, ...result.value.eventsTopic }
+const updatesSubscription = { ...result.value.messageQueue, ...result.value.updatesSubscription }
 
 module.exports = {
-  demographicsTopic,
   customerTopic,
-  eventsTopic
+  eventsTopic,
+  updatesSubscription
 }

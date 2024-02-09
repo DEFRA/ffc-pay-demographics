@@ -3,7 +3,7 @@ const { processFiles } = require('./process-files')
 
 const start = async () => {
   try {
-    if (processingConfig.enabled) {
+    if (processingConfig.daxEnabled) {
       await processFiles()
     }
   } catch (err) {

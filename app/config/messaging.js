@@ -14,11 +14,6 @@ const schema = Joi.object({
   },
   eventsTopic: {
     address: Joi.string()
-  },
-  updatesSubscription: {
-    address: Joi.string(),
-    topic: Joi.string(),
-    type: Joi.string().allow('subscription')
   }
 })
 
@@ -35,11 +30,6 @@ const config = {
   },
   eventsTopic: {
     address: process.env.EVENTS_TOPIC_ADDRESS
-  },
-  updatesSubscription: {
-    address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,
-    topic: process.env.DEMOGRAPHICS_TOPIC_ADDRESS,
-    type: 'subscription'
   }
 }
 
@@ -53,10 +43,8 @@ if (result.error) {
 
 const customerTopic = { ...result.value.messageQueue, ...result.value.customerTopic }
 const eventsTopic = { ...result.value.messageQueue, ...result.value.eventsTopic }
-const updatesSubscription = { ...result.value.messageQueue, ...result.value.updatesSubscription }
 
 module.exports = {
   customerTopic,
-  eventsTopic,
-  updatesSubscription
+  eventsTopic
 }

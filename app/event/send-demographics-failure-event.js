@@ -1,5 +1,5 @@
 const config = require('../config/processing')
-const messageConfig = require('../config/messaging')
+const messageConfig = require('../config/server')
 const { EventPublisher } = require('ffc-pay-event-publisher')
 
 const sendDemographicsFailureEvent = async (filename, type, error) => {

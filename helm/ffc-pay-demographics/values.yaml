@@ -25,6 +25,7 @@ container:
   requestCpu: 100m
   limitMemory: 100Mi
   limitCpu: 100m
+  port: 3003
   enabled: true
   daxEnabled: false
   azureStorageAccountName: ffcpay
@@ -35,8 +36,6 @@ container:
   daxStorageFolder: dax
   daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
-  demographicsTopicAddress: ffc-pay-demographics
-  demographicsSubscriptionAddress: ffc-pay-demographics
   customerTopicAddress: ffc-pay-customer
   azureStorageUseConnectionString: false
   eventsTopicAddress: ffc-pay-events
@@ -48,6 +47,22 @@ postgresService:
   postgresPort: 5432
   postgresSchema: public
   postgresUser: postgres
+
+livenessProbe:
+  path: /healthz
+  port: 3003
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  failureThreshold: 3
+  timeoutSeconds: 5
+
+readinessProbe:
+  path: /healthy
+  port: 3003
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  failureThreshold: 3
+  timeoutSeconds: 5
 
 aadPodIdentity: true
 

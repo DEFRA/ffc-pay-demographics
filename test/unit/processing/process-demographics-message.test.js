@@ -2,9 +2,9 @@ jest.mock('ffc-messaging')
 jest.mock('../../../app/data')
 jest.mock('../../../app/processing/process-file')
 const processFile = require('../../../app/processing/process-file')
-jest.mock('../../../app/messaging/get-file-name-from-url')
-const getFileNameFromUrl = require('../../../app/messaging/get-file-name-from-url')
-const processDemographicsMessage = require('../../../app/messaging/process-demographics-message')
+jest.mock('../../../app/processing/get-file-name-from-url')
+const { getFileNameFromUrl } = require('../../../app/processing/get-file-name-from-url')
+const { processDemographicsMessage } = require('../../../app/processing/process-demographics-message')
 let receiver
 const message = {
   body: [{
@@ -19,8 +19,6 @@ describe('process demographics message', () => {
     receiver = {
       completeMessage: jest.fn()
     }
-    processFile.mockResolvedValue(true)
-    getFileNameFromUrl.mockResolvedValue('file.txt')
   })
 
   afterEach(() => {
@@ -32,8 +30,9 @@ describe('process demographics message', () => {
     expect(getFileNameFromUrl).toHaveBeenCalledWith('https://url/to/file.txt')
   })
 
-  test('completes valid message', async () => {
+  test('calls processFile', async () => {
+    getFileNameFromUrl.mockReturnValue('file.txt')
     await processDemographicsMessage(message, receiver)
-    expect(receiver.completeMessage).toHaveBeenCalledWith(message)
+    expect(processFile).toHaveBeenCalledWith('file.txt')
   })
 })

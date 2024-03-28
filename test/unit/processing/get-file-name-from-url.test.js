@@ -1,4 +1,4 @@
-const getFileNameFromUrl = require('../../../app/messaging/get-file-name-from-url')
+const { getFileNameFromUrl } = require('../../../app/processing/get-file-name-from-url')
 
 describe('getFileNameFromUrl', () => {
   test('returns empty string if url is null', () => {

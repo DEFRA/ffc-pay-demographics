@@ -41,6 +41,11 @@ container:
   eventsTopicAddress: ffc-pay-events
   useEvents: true
 
+ingress:
+  class: nginx
+  endpoint: ffc-pay-demographics
+  server: example.com
+
 postgresService:
   postgresDb: ffc_pay_demographics
   postgresqlHost: ffc-pay-demographics-postgres

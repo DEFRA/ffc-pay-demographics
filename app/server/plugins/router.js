@@ -1,7 +1,7 @@
 const routes = [].concat(
   require('../routes/healthy'),
   require('../routes/healthz'),
-  require('../routes/fcp-event')
+  require('../routes/demographics')
 )
 
 module.exports = {

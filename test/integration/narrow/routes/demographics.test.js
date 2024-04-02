@@ -18,10 +18,10 @@ describe('fcp event', () => {
     await server.stop()
   })
 
-  test('POST /fcp-event calls processDemographicsMessage', async () => {
+  test('POST /demographics calls processDemographicsMessage', async () => {
     const options = {
       method: POST,
-      url: '/fcp-event',
+      url: '/demographics',
       payload: {
         string: 'Payload'
       }
@@ -33,10 +33,10 @@ describe('fcp event', () => {
     })
   })
 
-  test('POST /fcp-event returns 200 if successful', async () => {
+  test('POST /demographics returns 200 if successful', async () => {
     const options = {
       method: POST,
-      url: '/fcp-event',
+      url: '/demographics',
       payload: {
         string: 'Payload'
       }
@@ -46,10 +46,10 @@ describe('fcp event', () => {
     expect(result.statusCode).toBe(200)
   })
 
-  test('POST /fcp-event returns 500 if processing fails', async () => {
+  test('POST /demographics returns 500 if processing fails', async () => {
     const options = {
       method: POST,
-      url: '/fcp-event',
+      url: '/demographics',
       payload: {
         string: 'Payload'
       }

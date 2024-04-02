@@ -3,7 +3,7 @@ const { processDemographicsMessage } = require('../../processing/process-demogra
 
 module.exports = [{
   method: POST,
-  path: '/fcp-event',
+  path: '/demographics',
   options: {
     handler: async (request, h) => {
       try {

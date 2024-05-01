@@ -5,5 +5,5 @@ const processing = require('./processing')
 
 module.exports = (async () => {
   await startServer()
-  processing.start()
+  await processing.start()
 })()

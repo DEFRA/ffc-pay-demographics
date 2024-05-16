@@ -38,7 +38,7 @@ const mapLookupAddress = (address) => {
     addressString += ` ${address.buildingNumberRange}`
   }
   addressString += ` ${address.street}`
-  if (addressString.charAt(0) === ' ') {
+  if (addressString.startsWith(' ')) {
     addressString = addressString.slice(1)
   }
   return addressString

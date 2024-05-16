@@ -5,15 +5,20 @@ const { mapStreetAddress } = require('./map-street-address')
 
 const createDaxData = async (customer) => {
   const frn = customer.organisation.firmId
-  // where TL uses the Claimant Group directly, we will receive a corresponding business type ID
   const group = await mapCustomerGroup(frn, customer.organisation.businessTypeId)
   const address = customer.address[0]
   const countryRegionId = await mapCountry(address.country)
   const street = await mapStreetAddress(address)
+
+  let gsTraderStatus = null
+  if (group) {
+    gsTraderStatus = group.isTrader ? 'Active' : 'NotATrader'
+  }
+
   const customerUpdate = {
     accountNum: frn,
     gsTraderEmail: customer.digitalContact[0].digitalAddress,
-    gsTraderStatus: group ? (group.isTrader ? 'Active' : 'NotATrader') : null,
+    gsTraderStatus,
     vendGroup: group?.daxGroup,
     name: customer.organisation.organisationName,
     uniqueRecordDPPAddrRole: address.addressType,
@@ -23,6 +28,7 @@ const createDaxData = async (customer) => {
     street,
     zipCode: address.postalCode
   }
+
   const isValid = schema.validate(customerUpdate, {
     abortEarly: false
   })

@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-demographics",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Process customer updates",
   "homepage": "https://github.com/DEFRA/ffc-pay-demographics",
   "main": "app/index.js",
@@ -16,7 +16,8 @@
   "author": "Defra",
   "contributors": [
     "John Watson john.watson1@defra.gov.uk",
-    "Sam Plackett samuel.plackett@eviden.com"
+    "Sam Plackett samuel.plackett@eviden.com",
+    "Leigh Godson leigh.godson.external@eviden.com"
   ],
   "license": "OGL-UK-3.0",
   "dependencies": {

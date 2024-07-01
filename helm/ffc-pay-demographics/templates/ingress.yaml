@@ -1,3 +1,0 @@
-{{- include "ffc-helm-library.azure-ingress" (list . "ffc-pay-demographics.ingress") -}}
-{{- define "ffc-pay-demographics.ingress" -}}
-{{- end -}}

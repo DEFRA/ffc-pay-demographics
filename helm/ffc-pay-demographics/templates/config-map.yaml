@@ -2,7 +2,6 @@
 {{- define "ffc-pay-demographics.config-map" -}}
 data:
   NODE_ENV: {{ quote .Values.environment }}
-  PORT: {{ quote .Values.container.port }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
   ENABLED: {{ quote .Values.container.enabled }}
   DAX_ENABLED: {{ quote .Values.container.daxEnabled }}
@@ -15,13 +14,17 @@ data:
   DAX_STORAGE_FOLDER_NAME: {{ quote .Values.container.daxStorageFolder }}
   DAX_STORAGE_OUTBOUND_FOLDER_NAME: {{ quote .Values.container.daxStorageOutboundFolder }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
+  UPDATES_MESSAGE_QUEUE_HOST: {{ quote .Values.container.updatesMessageQueueHost }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
+  UPDATES_TOPIC_ADDRESS: {{ .Values.container.updatesTopicAddress }}-{{ .Values.environmentCode }}
   CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}
   EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}-{{ .Values.environmentCode }}
   {{ else }}
+  UPDATES_TOPIC_ADDRESS: {{ .Values.container.updatesTopicAddress }}
   CUSTOMER_TOPIC_ADDRESS: {{ quote .Values.container.customerTopicAddress }}
   EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}
   {{- end }}
+  UPDATES_SUBSCRIPTION_ADDRESS: {{ quote .Values.container.updatesSubscriptionAddress }}
   POSTGRES_DB: {{ quote .Values.postgresService.postgresDb }}
   POSTGRES_HOST: {{ quote .Values.postgresService.postgresqlHost }}
   POSTGRES_PORT: {{ quote .Values.postgresService.postgresPort }}

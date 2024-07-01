@@ -1,9 +1,14 @@
 require('./insights').setup()
 require('log-timestamp')
-const { start: startServer } = require('./server')
 const processing = require('./processing')
+const messaging = require('./messaging')
+
+process.on(['SIGTERM', 'SIGINT'], async () => {
+  await messaging.stop()
+  process.exit(0)
+})
 
 module.exports = (async () => {
-  await startServer()
-  await processing.start()
+  messaging.start()
+  processing.start()
 })()

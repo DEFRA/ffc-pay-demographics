@@ -28,7 +28,7 @@ const daxUpdate = require('../../mocks/dax-update')
 const outboundFilename = require('../../mocks/outbound-filename')
 const { DAX, DEMOGRAPHICS } = require('../../../app/constants/containers')
 const { DEMOGRAPHICS_PROCESSING_FAILED } = require('../../../app/constants/events')
-const { processingConfig } = require('../../../app/config/processing')
+const processingConfig = require('../../../app/config/processing')
 
 const err = new Error('These are not the droids you\'re looking for')
 

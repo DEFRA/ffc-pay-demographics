@@ -15,6 +15,7 @@ data:
   DAX_STORAGE_OUTBOUND_FOLDER_NAME: {{ quote .Values.container.daxStorageOutboundFolder }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   UPDATES_MESSAGE_QUEUE_HOST: {{ quote .Values.container.updatesMessageQueueHost }}
+  UPDATES_MESSAGE_USE_CREDENTIAL_CHAIN: {{ quote .Values.container.updatesMessageUseCredentialChain }}
   {{- if and (.Values.environmentCode) (not .Values.pr) }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
   CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}

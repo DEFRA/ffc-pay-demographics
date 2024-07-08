@@ -19,7 +19,7 @@ const schema = Joi.object({
     host: Joi.string(),
     username: Joi.string(),
     password: Joi.string(),
-    connectionString: Joi.string(),
+    connectionString: Joi.string().optional(),
     useCredentialChain: Joi.bool().default(false),
     appInsights: Joi.object()
   },

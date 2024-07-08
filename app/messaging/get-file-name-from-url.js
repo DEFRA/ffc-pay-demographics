@@ -4,8 +4,8 @@ const getFileNameFromUrl = (url) => {
   }
   const parsedUrl = new URL(url)
   const pathname = parsedUrl.pathname
-  const segments = pathname.split('/')
-  return segments.pop()
+  const segments = pathname.split('/').filter(segment => segment.length > 0)
+  return segments.pop() ?? ''
 }
 
 module.exports = getFileNameFromUrl

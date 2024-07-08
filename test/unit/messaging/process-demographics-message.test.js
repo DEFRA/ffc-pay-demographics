@@ -8,6 +8,7 @@ jest.mock('../../../app/processing/process-file')
 describe('process demographics message', () => {
   let message
   let receiver
+  let consoleErrorSpy
 
   beforeEach(() => {
     message = {
@@ -25,10 +26,13 @@ describe('process demographics message', () => {
 
     getFileNameFromUrl.mockReturnValue('file.txt')
     processFile.mockResolvedValue()
+
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   afterEach(() => {
     jest.clearAllMocks()
+    consoleErrorSpy.mockRestore()
   })
 
   test('should extract the file name from the URL and process the file', async () => {
@@ -53,6 +57,7 @@ describe('process demographics message', () => {
 
   test('should handle missing URL in message body', async () => {
     message.body[0].data.url = null
+    getFileNameFromUrl.mockReturnValue('')
 
     await processDemographicsMessage(message, receiver)
 

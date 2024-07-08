@@ -35,6 +35,7 @@ container:
   daxStorageFolder: dax
   daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
+  updatesMessageConnectionString: dummy
   updatesMessageQueueHost: namespace.servicebus.windows.net
   updatesMessageUseCredentialChain: false
   customerTopicAddress: ffc-pay-customer

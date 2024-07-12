@@ -39,6 +39,7 @@ container:
   updatesMessageQueueHost: namespace.servicebus.windows.net
   updatesMessageUseCredentialChain: false
   customerTopicAddress: ffc-pay-customer
+  demographicsExtractTopicAddress: ffc-pay-demographics-extract
   demographicsTopicAddress: ffc-pay-demographics
   demographicsSubscriptionAddress: ffc-pay-demographics
   azureStorageUseConnectionString: false

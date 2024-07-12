@@ -16,6 +16,12 @@ const { sendMessages: mockSendMessages } = require('../../../app/messaging/send-
 jest.mock('../../../app/event')
 const { sendDemographicsFailureEvent: mockSendDemographicsFailureEvent } = require('../../../app/event')
 
+jest.mock('../../../app/processing/get-outbound-file-name')
+const { getOutboundFileName: mockGetOutboundFileName } = require('../../../app/processing/get-outbound-file-name')
+
+jest.mock('../../../app/messaging/send-extract-message')
+const { sendExtractMessage: mockSendExtractMessage } = require('../../../app/messaging/send-extract-message')
+
 const content = require('../../mocks/file-content-manual-address')
 const customerContent = require('../../mocks/customer-content')
 const daxData = require('../../mocks/dax-data')
@@ -36,6 +42,7 @@ describe('process file', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     jest.spyOn(console, 'error').mockImplementation(() => { })
+    jest.spyOn(console, 'log').mockImplementation(() => { })
     mockDownloadFile.mockResolvedValue(JSON.stringify(content))
     mockCreateCustomerUpdate.mockReturnValue(customerContent)
     mockSendMessages.mockReturnValue(true)
@@ -43,6 +50,8 @@ describe('process file', () => {
     mockCreateDaxUpdate.mockReturnValue(daxUpdate)
     mockUploadFile.mockResolvedValue(true)
     mockSendDemographicsFailureEvent.mockReturnValue(true)
+    mockGetOutboundFileName.mockReturnValue(outboundFilename)
+    mockSendExtractMessage.mockReturnValue(true)
     processingConfig.daxEnabled = false
   })
 
@@ -159,6 +168,24 @@ describe('process file', () => {
   test('should send demographics failure event if uploading file fails', async () => {
     mockUploadFile.mockRejectedValue(err)
     processingConfig.daxEnabled = true
+    await processFile(filename)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+  })
+
+  test('should send extract message', async () => {
+    await processFile(filename)
+    expect(mockSendExtractMessage).toHaveBeenCalledWith(content.capparty[0])
+  })
+
+  test('if sending extract message fails, should throw error', async () => {
+    mockSendExtractMessage.mockRejectedValue(err)
+    await processFile(filename)
+    expect(console.error).toHaveBeenCalled()
+    expect(console.error.mock.calls[0][0]).toBe(err)
+  })
+
+  test('should send demographics failure event if sending extract message fails', async () => {
+    mockSendExtractMessage.mockRejectedValue(err)
     await processFile(filename)
     expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
   })

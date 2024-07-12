@@ -12,13 +12,11 @@ describe('process demographics message', () => {
 
   beforeEach(() => {
     message = {
-      body: [
-        {
-          data: {
-            url: 'http://example.com/path/to/file.txt'
-          }
+      body: {
+        data: {
+          url: 'http://example.com/path/to/file.txt'
         }
-      ]
+      }
     }
     receiver = {
       completeMessage: jest.fn()
@@ -56,7 +54,7 @@ describe('process demographics message', () => {
   })
 
   test('should handle missing URL in message body', async () => {
-    message.body[0].data.url = null
+    message.body.data.url = null
     getFileNameFromUrl.mockReturnValue('')
 
     await processDemographicsMessage(message, receiver)

@@ -9,6 +9,7 @@ const { getOutboundFileName } = require('./get-outbound-file-name')
 const { sendDemographicsFailureEvent } = require('../event')
 const { DEMOGRAPHICS_PROCESSING_FAILED } = require('../constants/events')
 const { processingConfig } = require('../config')
+const { sendExtractMessage } = require('../messaging/send-extract-message')
 
 const processFile = async (file) => {
   try {
@@ -18,6 +19,7 @@ const processFile = async (file) => {
     const party = parsedData.capparty[0]
     // if no organisation element - no updates to be made
     if (party.organisation) {
+      await sendExtractMessage(party)
       const customerMessages = await createCustomerUpdate(party.organisation, party.legacyIdentifier)
       await sendMessages(customerMessages, CUSTOMER)
       if (processingConfig.daxEnabled) {

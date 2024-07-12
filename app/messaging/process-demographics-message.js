@@ -3,7 +3,7 @@ const processFile = require('../processing/process-file')
 
 const processDemographicsMessage = async (message, receiver) => {
   try {
-    const filePath = message.body[0].data.url
+    const filePath = message.body.data.url
     const file = getFileNameFromUrl(filePath)
     await processFile(file)
     await receiver.completeMessage(message)

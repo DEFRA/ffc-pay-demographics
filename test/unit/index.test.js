@@ -13,6 +13,8 @@ jest.mock('../../app/messaging', () => ({
 const { setup: mockSetup } = require('../../app/insights')
 const { start: mockProcessingStart } = require('../../app/processing')
 const { start: mockMessagingStart } = require('../../app/messaging')
+jest.mock('../../app/storage.js')
+const { initialiseContainers: mockInitialiseContainers } = require('../../app/storage')
 
 describe('app', () => {
   beforeEach(() => {
@@ -25,6 +27,10 @@ describe('app', () => {
 
   test('should setup insights', () => {
     expect(mockSetup).toHaveBeenCalled()
+  })
+
+  test('should initialise containers', () => {
+    expect(mockInitialiseContainers).toHaveBeenCalled()
   })
 
   test('should start processing', () => {

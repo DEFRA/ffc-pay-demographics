@@ -121,6 +121,7 @@ const archiveFile = async (filename, contName) => {
 }
 
 module.exports = {
+  initialiseContainers,
   getDemographicsFiles,
   getReturnFiles,
   downloadFile,

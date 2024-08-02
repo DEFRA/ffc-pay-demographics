@@ -16,7 +16,7 @@ jest.mock('../../../app/config/processing')
 const processingConfig = require('../../../app/config/processing')
 
 jest.mock('../../../app/config/messaging')
-const messagingConfig = require('../../../app/config/server')
+const messagingConfig = require('../../../app/config/messaging')
 
 const { DEMOGRAPHICS_UPDATE_FAILED, DEMOGRAPHICS_PROCESSING_FAILED } = require('../../../app/constants/events')
 

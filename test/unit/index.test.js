@@ -1,19 +1,43 @@
-jest.mock('../../app/processing')
-const { start: mockStart } = require('../../app/processing')
+jest.mock('../../app/insights', () => ({
+  setup: jest.fn()
+}))
+jest.mock('log-timestamp', () => jest.fn())
+jest.mock('../../app/processing', () => ({
+  start: jest.fn()
+}))
+jest.mock('../../app/messaging', () => ({
+  start: jest.fn(),
+  stop: jest.fn()
+}))
 
-jest.mock('../../app/server')
-const { start: mockServStart } = require('../../app/server')
+const { setup: mockSetup } = require('../../app/insights')
+const { start: mockProcessingStart } = require('../../app/processing')
+const { start: mockMessagingStart } = require('../../app/messaging')
+jest.mock('../../app/storage.js')
+const { initialiseContainers: mockInitialiseContainers } = require('../../app/storage')
 
-describe('start', () => {
+describe('app', () => {
   beforeEach(() => {
-    require('../../app')
+    jest.clearAllMocks()
+
+    jest.isolateModules(() => {
+      require('../../app')
+    })
   })
 
-  test('should start server', () => {
-    expect(mockServStart).toHaveBeenCalled()
+  test('should setup insights', () => {
+    expect(mockSetup).toHaveBeenCalled()
+  })
+
+  test('should initialise containers', () => {
+    expect(mockInitialiseContainers).toHaveBeenCalled()
   })
 
   test('should start processing', () => {
-    expect(mockStart).toHaveBeenCalled()
+    expect(mockProcessingStart).toHaveBeenCalled()
+  })
+
+  test('should start messaging', () => {
+    expect(mockMessagingStart).toHaveBeenCalled()
   })
 })

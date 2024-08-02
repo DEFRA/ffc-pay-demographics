@@ -16,13 +16,16 @@ data:
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   UPDATES_MESSAGE_QUEUE_HOST: {{ quote .Values.container.updatesMessageQueueHost }}
   UPDATES_MESSAGE_USE_CREDENTIAL_CHAIN: {{ quote .Values.container.updatesMessageUseCredentialChain }}
-  {{- if and (.Values.environmentCode) (not .Values.pr) }}
+  {{- if and (.Values.environmentCode) (eq (.Values.environmentCode | toString ) "snd") (not .Values.pr) }}
   DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}-{{ .Values.environmentCode }}
+  {{ else }}
+  DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}
+  {{- end }}
+  {{- if and (.Values.environmentCode) (not .Values.pr) }}
   CUSTOMER_TOPIC_ADDRESS: {{ .Values.container.customerTopicAddress }}-{{ .Values.environmentCode }}
   DEMOGRAPHICS_EXTRACT_TOPIC_ADDRESS: {{ .Values.container.demographicsExtractTopicAddress }}-{{ .Values.environmentCode }}
   EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}-{{ .Values.environmentCode }}
   {{ else }}
-  DEMOGRAPHICS_TOPIC_ADDRESS: {{ .Values.container.demographicsTopicAddress }}
   CUSTOMER_TOPIC_ADDRESS: {{ quote .Values.container.customerTopicAddress }}
   DEMOGRAPHICS_EXTRACT_TOPIC_ADDRESS: {{ .Values.container.demographicsExtractTopicAddress }}
   EVENTS_TOPIC_ADDRESS: {{ .Values.container.eventsTopicAddress }}

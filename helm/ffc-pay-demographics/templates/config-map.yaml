@@ -6,7 +6,7 @@ data:
   ENABLED: {{ quote .Values.container.enabled }}
   DAX_ENABLED: {{ quote .Values.container.daxEnabled }}
   AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}
-  AZURE_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.azureStorageAccountName }}
+  DEMOGRAPHICS_STORAGE_ACCOUNT_NAME: {{ quote .Values.container.demographicsStorageAccountName }}
   DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
   DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
   DAX_STORAGE_CONNECTION_STRING: {{ quote .Values.container.daxStorageConnectionString }}

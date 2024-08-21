@@ -16,7 +16,7 @@ const schema = Joi.object({
 const config = {
   enabled: process.env.ENABLED,
   connectionString: process.env.DEMOGRAPHICS_STORAGE_CONNECTION_STRING,
-  storageAccount: process.env.AZURE_STORAGE_ACCOUNT_NAME,
+  storageAccount: process.env.DEMOGRAPHICS_STORAGE_ACCOUNT_NAME,
   demographicsContainer: process.env.DEMOGRAPHICS_STORAGE_SHARE_NAME,
   daxContainer: 'dax',
   daxFolder: process.env.DAX_STORAGE_FOLDER_NAME,

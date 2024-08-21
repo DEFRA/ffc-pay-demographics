@@ -35,7 +35,7 @@ const processFile = async (file) => {
   } catch (err) {
     console.error(err)
     console.log(`Error occurred processing file: ${file}`)
-    await sendDemographicsFailureEvent(file, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    await sendDemographicsFailureEvent(file, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   }
 }
 

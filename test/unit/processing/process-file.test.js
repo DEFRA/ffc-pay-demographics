@@ -36,7 +36,7 @@ const { DAX, DEMOGRAPHICS } = require('../../../app/constants/containers')
 const { DEMOGRAPHICS_PROCESSING_FAILED } = require('../../../app/constants/events')
 const processingConfig = require('../../../app/config/processing')
 
-const err = new Error('These are not the droids you\'re looking for')
+const err = new Error({ message: 'These are not the droids you\'re looking for' })
 
 describe('process file', () => {
   beforeEach(() => {
@@ -70,7 +70,7 @@ describe('process file', () => {
   test('should send demographics failure event if download fails', async () => {
     mockDownloadFile.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 
   test('should create customer update', async () => {
@@ -88,7 +88,7 @@ describe('process file', () => {
   test('should send demographics failure event if create customer update fails', async () => {
     mockCreateCustomerUpdate.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 
   test('should send customer update', async () => {
@@ -106,7 +106,7 @@ describe('process file', () => {
   test('should send demographics failure event if sending customer update fails', async () => {
     mockSendMessages.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 
   test('should not create dax data', async () => {
@@ -132,7 +132,7 @@ describe('process file', () => {
     mockCreateDaxData.mockRejectedValue(err)
     processingConfig.daxEnabled = true
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 
   test('should not create dax update', async () => {
@@ -169,7 +169,7 @@ describe('process file', () => {
     mockUploadFile.mockRejectedValue(err)
     processingConfig.daxEnabled = true
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 
   test('should send extract message', async () => {
@@ -187,6 +187,6 @@ describe('process file', () => {
   test('should send demographics failure event if sending extract message fails', async () => {
     mockSendExtractMessage.mockRejectedValue(err)
     await processFile(filename)
-    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err)
+    expect(mockSendDemographicsFailureEvent).toHaveBeenCalledWith(filename, DEMOGRAPHICS_PROCESSING_FAILED, err.message)
   })
 })

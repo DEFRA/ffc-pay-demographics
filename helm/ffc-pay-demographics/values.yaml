@@ -45,6 +45,9 @@ container:
   azureStorageUseConnectionString: false
   eventsTopicAddress: ffc-pay-events
   useEvents: true
+  demographicsClientId: dummy-id
+  demographicsTenantId: dummy-id
+  demographicsClientSecret: dummy-secret
 
 postgresService:
   postgresDb: ffc_pay_demographics

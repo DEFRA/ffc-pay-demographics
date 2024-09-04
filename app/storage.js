@@ -16,12 +16,12 @@ const setupBlobServiceClient = () => {
   } else {
     const uri = `https://${storageConfig.storageAccount}.blob.core.windows.net`
     let credential
-    if (storageConfig.clientId && storageConfig.clientSecret && storageConfig.tenantId) {
+    if (storageConfig.demographicsClientId && storageConfig.demographicsClientSecret && storageConfig.demographicsTenantId) {
       console.log('Using Service Principal for BlobServiceClient')
       credential = new ClientSecretCredential(
-        storageConfig.tenantId,
-        storageConfig.clientId,
-        storageConfig.clientSecret
+        storageConfig.demographicsTenantId,
+        storageConfig.demographicsClientId,
+        storageConfig.demographicsClientSecret
       )
     } else {
       console.log('Using DefaultAzureCredential for BlobServiceClient')

@@ -1,4 +1,4 @@
-const { DefaultAzureCredential } = require('@azure/identity')
+const { DefaultAzureCredential, ClientSecretCredential } = require('@azure/identity')
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
 const { DEMOGRAPHICS, DAX } = require('./constants/containers')
@@ -10,9 +10,20 @@ if (storageConfig.useConnectionStr) {
   console.log('Using connection string for BlobServiceClient')
   blobServiceClient = BlobServiceClient.fromConnectionString(storageConfig.connectionString)
 } else {
-  console.log('Using DefaultAzureCredential for BlobServiceClient')
   const uri = `https://${storageConfig.storageAccount}.blob.core.windows.net`
-  blobServiceClient = new BlobServiceClient(uri, new DefaultAzureCredential())
+  let credential
+  if (storageConfig.clientId && storageConfig.clientSecret && storageConfig.tenantId) {
+    console.log('Using Service Principal for BlobServiceClient')
+    credential = new ClientSecretCredential(
+      storageConfig.demographicsTenantId,
+      storageConfig.demographicsClientId,
+      storageConfig.demographicsClientSecret
+    )
+  } else {
+    console.log('Using DefaultAzureCredential for BlobServiceClient')
+    credential = new DefaultAzureCredential()
+  }
+  blobServiceClient = new BlobServiceClient(uri, credential)
 }
 
 const demographicsContainer = blobServiceClient.getContainerClient(storageConfig.demographicsContainer)

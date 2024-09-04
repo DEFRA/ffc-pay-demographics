@@ -2,43 +2,50 @@ const { DefaultAzureCredential, ClientSecretCredential } = require('@azure/ident
 const { BlobServiceClient } = require('@azure/storage-blob')
 const { storageConfig } = require('./config')
 const { DEMOGRAPHICS, DAX } = require('./constants/containers')
-let blobServiceClient
-let containersInitialised
-let foldersInitialised
 
-if (storageConfig.useConnectionStr) {
-  console.log('Using connection string for BlobServiceClient')
-  blobServiceClient = BlobServiceClient.fromConnectionString(storageConfig.connectionString)
-} else {
-  const uri = `https://${storageConfig.storageAccount}.blob.core.windows.net`
-  let credential
-  if (storageConfig.clientId && storageConfig.clientSecret && storageConfig.tenantId) {
-    console.log('Using Service Principal for BlobServiceClient')
-    credential = new ClientSecretCredential(
-      storageConfig.demographicsTenantId,
-      storageConfig.demographicsClientId,
-      storageConfig.demographicsClientSecret
-    )
+let blobServiceClient
+let foldersInitialised
+let demographicsContainer
+let daxContainer
+let containersInitialised = false
+
+const setupBlobServiceClient = () => {
+  if (storageConfig.useConnectionStr) {
+    console.log('Using connection string for BlobServiceClient')
+    blobServiceClient = BlobServiceClient.fromConnectionString(storageConfig.connectionString)
   } else {
-    console.log('Using DefaultAzureCredential for BlobServiceClient')
-    credential = new DefaultAzureCredential()
+    const uri = `https://${storageConfig.storageAccount}.blob.core.windows.net`
+    let credential
+    if (storageConfig.clientId && storageConfig.clientSecret && storageConfig.tenantId) {
+      console.log('Using Service Principal for BlobServiceClient')
+      credential = new ClientSecretCredential(
+        storageConfig.tenantId,
+        storageConfig.clientId,
+        storageConfig.clientSecret
+      )
+    } else {
+      console.log('Using DefaultAzureCredential for BlobServiceClient')
+      credential = new DefaultAzureCredential()
+    }
+    blobServiceClient = new BlobServiceClient(uri, credential)
   }
-  blobServiceClient = new BlobServiceClient(uri, credential)
+  demographicsContainer = blobServiceClient.getContainerClient(storageConfig.demographicsContainer)
+  daxContainer = blobServiceClient.getContainerClient(storageConfig.daxContainer)
 }
 
-const demographicsContainer = blobServiceClient.getContainerClient(storageConfig.demographicsContainer)
-const daxContainer = blobServiceClient.getContainerClient(storageConfig.daxContainer)
-
 const initialiseContainers = async () => {
-  if (storageConfig.enabled) {
-    if (storageConfig.createContainers) {
-      console.log('Making sure blob containers exist')
-      await demographicsContainer.createIfNotExists()
-      await daxContainer.createIfNotExists()
-      console.log('Containers ready')
+  if (!containersInitialised) {
+    setupBlobServiceClient()
+    if (storageConfig.enabled) {
+      if (storageConfig.createContainers) {
+        console.log('Making sure blob containers exist')
+        await demographicsContainer.createIfNotExists()
+        await daxContainer.createIfNotExists()
+        console.log('Containers ready')
+      }
+      foldersInitialised ?? await initialiseFolders()
+      containersInitialised = true
     }
-    foldersInitialised ?? await initialiseFolders()
-    containersInitialised = true
   }
 }
 
@@ -131,6 +138,12 @@ const archiveFile = async (filename, contName) => {
   return false
 }
 
+// Helper functions to reset state for testing purposes
+const resetInitialisationState = () => {
+  containersInitialised = false
+  foldersInitialised = false
+}
+
 module.exports = {
   initialiseContainers,
   getDemographicsFiles,
@@ -139,5 +152,8 @@ module.exports = {
   uploadFile,
   deleteFile,
   quarantineFile,
-  archiveFile
+  archiveFile,
+  _testOnly: {
+    resetInitialisationState
+  }
 }

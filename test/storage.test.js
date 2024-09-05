@@ -165,9 +165,9 @@ describe('storage', () => {
 
     test('should use DefaultAzureCredential when useConnectionStr is false and no client credentials are provided', async () => {
       storageConfig.useConnectionStr = false
-      storageConfig.clientId = null
-      storageConfig.clientSecret = null
-      storageConfig.tenantId = null
+      storageConfig.demographicsClientId = null
+      storageConfig.demographicsClientSecret = null
+      storageConfig.demographicsTenantId = null
 
       await initialiseContainers()
 
@@ -178,9 +178,9 @@ describe('storage', () => {
 
     test('should use ClientSecretCredential when client credentials are provided', async () => {
       storageConfig.useConnectionStr = false
-      storageConfig.clientId = 'mock-client-id'
-      storageConfig.clientSecret = 'mock-client-secret'
-      storageConfig.tenantId = 'mock-tenant-id'
+      storageConfig.demographicsClientId = 'mock-client-id'
+      storageConfig.demographicsClientSecret = 'mock-client-secret'
+      storageConfig.demographicsTenantId = 'mock-tenant-id'
 
       await initialiseContainers()
 

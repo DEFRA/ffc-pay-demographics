@@ -1,6 +1,8 @@
 const mockFileContent = 'content'
 const mockDelete = jest.fn()
 const mockCreate = jest.fn()
+const mockCopyFromURL = jest.fn().mockResolvedValue({ pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'success' }) })
+const mockBeginCopyFromURL = jest.fn().mockImplementation(mockCopyFromURL)
 const returnFilename = require('./mocks/return-filename')
 const mockContainerClient = {
   createIfNotExists: jest.fn(),
@@ -14,31 +16,57 @@ const mockContainerClient = {
     return {
       upload: jest.fn().mockImplementation(mockCreate),
       delete: jest.fn().mockImplementation(mockDelete),
-      downloadToBuffer: jest.fn().mockResolvedValue(mockFileContent)
+      downloadToBuffer: jest.fn().mockResolvedValue(mockFileContent),
+      beginCopyFromURL: jest.fn().mockImplementation(mockBeginCopyFromURL)
     }
   })
 }
 const mockBlobServiceClient = {
   getContainerClient: jest.fn().mockReturnValue(mockContainerClient)
 }
+
 jest.mock('@azure/storage-blob', () => {
+  const BlobServiceClient = jest.fn().mockImplementation(() => mockBlobServiceClient)
+
+  BlobServiceClient.fromConnectionString = jest.fn().mockReturnValue(mockBlobServiceClient)
+
   return {
-    BlobServiceClient: {
-      fromConnectionString: jest.fn().mockReturnValue(mockBlobServiceClient)
-    }
+    BlobServiceClient
+  }
+})
+
+jest.mock('@azure/identity', () => {
+  return {
+    DefaultAzureCredential: jest.fn(),
+    ClientSecretCredential: jest.fn()
   }
 })
 
 const { DEMOGRAPHICS } = require('../app/constants/containers')
-const { getDemographicsFiles, getReturnFiles, downloadFile, uploadFile, deleteFile } = require('../app/storage')
+const {
+  initialiseContainers,
+  getDemographicsFiles,
+  getReturnFiles,
+  downloadFile,
+  uploadFile,
+  deleteFile,
+  quarantineFile,
+  archiveFile,
+  _testOnly: { resetInitialisationState }
+} = require('../app/storage')
+const { storageConfig } = require('../app/config')
+const { DefaultAzureCredential, ClientSecretCredential } = require('@azure/identity')
+const { BlobServiceClient } = require('@azure/storage-blob')
 
 describe('storage', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.clearAllMocks()
+    resetInitialisationState()
   })
 
   describe('get demographics files', () => {
     test('should return only demographics files', async () => {
+      await initialiseContainers()
       const fileList = await getDemographicsFiles()
       expect(fileList).toEqual(['1234855_1321434.json'])
     })
@@ -46,6 +74,7 @@ describe('storage', () => {
 
   describe('get return files', () => {
     test('should return only return files', async () => {
+      await initialiseContainers()
       const fileList = await getReturnFiles()
       expect(fileList).toEqual([returnFilename])
     })
@@ -53,6 +82,7 @@ describe('storage', () => {
 
   describe('download file', () => {
     test('should download file', async () => {
+      await initialiseContainers()
       const fileContent = await downloadFile('1234855_1321434', DEMOGRAPHICS)
       expect(fileContent).toEqual(mockFileContent)
     })
@@ -60,6 +90,7 @@ describe('storage', () => {
 
   describe('upload file', () => {
     test('should upload file', async () => {
+      await initialiseContainers()
       await uploadFile('new_file', 'content', DEMOGRAPHICS)
       expect(mockCreate).toHaveBeenCalled()
     })
@@ -67,8 +98,99 @@ describe('storage', () => {
 
   describe('delete file', () => {
     test('should delete file', async () => {
+      await initialiseContainers()
       await deleteFile('1234855_1321434')
       expect(mockDelete).toHaveBeenCalled()
+    })
+  })
+
+  describe('initialise containers', () => {
+    test('should initialise containers when enabled and createContainers is true', async () => {
+      await initialiseContainers()
+      expect(mockContainerClient.createIfNotExists).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('quarantine file', () => {
+    test('should quarantine the file and delete the original', async () => {
+      await initialiseContainers()
+      const result = await quarantineFile('1234855_1321434.json', DEMOGRAPHICS)
+      expect(mockBeginCopyFromURL).toHaveBeenCalled()
+      expect(mockDelete).toHaveBeenCalled()
+      expect(result).toBe(true)
+    })
+
+    test('should not delete the original if copy fails', async () => {
+      await initialiseContainers()
+      mockCopyFromURL.mockResolvedValueOnce({ pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'failed' }) })
+      const result = await quarantineFile('1234855_1321434.json', DEMOGRAPHICS)
+      expect(mockDelete).not.toHaveBeenCalled()
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('archive file', () => {
+    test('should archive the file and delete the original', async () => {
+      await initialiseContainers()
+      const result = await archiveFile('1234855_1321434.json', DEMOGRAPHICS)
+      expect(mockBeginCopyFromURL).toHaveBeenCalled()
+      expect(mockDelete).toHaveBeenCalled()
+      expect(result).toBe(true)
+    })
+
+    test('should not delete the original if copy fails', async () => {
+      await initialiseContainers()
+      mockCopyFromURL.mockResolvedValueOnce({ pollUntilDone: jest.fn().mockResolvedValue({ copyStatus: 'failed' }) })
+      const result = await archiveFile('1234855_1321434.json', DEMOGRAPHICS)
+      expect(mockDelete).not.toHaveBeenCalled()
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('storage configuration options', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    test('should use connection string when useConnectionStr is true', async () => {
+      storageConfig.useConnectionStr = true
+      storageConfig.connectionString = 'mock-connection-string'
+
+      await initialiseContainers()
+
+      expect(BlobServiceClient.fromConnectionString).toHaveBeenCalledWith('mock-connection-string')
+      expect(DefaultAzureCredential).not.toHaveBeenCalled()
+      expect(ClientSecretCredential).not.toHaveBeenCalled()
+    })
+
+    test('should use DefaultAzureCredential when useConnectionStr is false and no client credentials are provided', async () => {
+      storageConfig.useConnectionStr = false
+      storageConfig.demographicsClientId = null
+      storageConfig.demographicsClientSecret = null
+      storageConfig.demographicsTenantId = null
+
+      await initialiseContainers()
+
+      expect(DefaultAzureCredential).toHaveBeenCalled()
+      expect(ClientSecretCredential).not.toHaveBeenCalled()
+      expect(BlobServiceClient.fromConnectionString).not.toHaveBeenCalled()
+    })
+
+    test('should use ClientSecretCredential when client credentials are provided', async () => {
+      storageConfig.useConnectionStr = false
+      storageConfig.demographicsClientId = 'mock-client-id'
+      storageConfig.demographicsClientSecret = 'mock-client-secret'
+      storageConfig.demographicsTenantId = 'mock-tenant-id'
+
+      await initialiseContainers()
+
+      expect(ClientSecretCredential).toHaveBeenCalledWith(
+        'mock-tenant-id',
+        'mock-client-id',
+        'mock-client-secret'
+      )
+      expect(DefaultAzureCredential).not.toHaveBeenCalled()
+      expect(BlobServiceClient.fromConnectionString).not.toHaveBeenCalled()
     })
   })
 })

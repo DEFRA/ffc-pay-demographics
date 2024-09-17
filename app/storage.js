@@ -34,9 +34,9 @@ const setupBlobServiceClient = () => {
 }
 
 const initialiseContainers = async () => {
-  if (!containersInitialised) {
-    setupBlobServiceClient()
-    if (storageConfig.enabled) {
+  if (storageConfig.enabled) {
+    if (!containersInitialised) {
+      setupBlobServiceClient()
       if (storageConfig.createContainers) {
         console.log('Making sure blob containers exist')
         await demographicsContainer.createIfNotExists()

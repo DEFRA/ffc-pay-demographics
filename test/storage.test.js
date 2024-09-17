@@ -154,22 +154,22 @@ describe('storage', () => {
     })
 
     describe('setupBlobServiceClient', () => {
-      test('should use connection string for BlobServiceClient when useConnectionStr is true', () => {
+      test('should use connection string for BlobServiceClient when useConnectionStr is true', async () => {
         storageConfig.useConnectionStr = true
         storageConfig.connectionString = 'mock-connection-string'
 
-        initialiseContainers()
+        await initialiseContainers()
 
         expect(BlobServiceClient.fromConnectionString).toHaveBeenCalledWith('mock-connection-string')
       })
 
-      test('should use ClientSecretCredential when client credentials are provided', () => {
+      test('should use ClientSecretCredential when client credentials are provided', async () => {
         storageConfig.useConnectionStr = false
         storageConfig.demographicsClientId = 'mock-client-id'
         storageConfig.demographicsClientSecret = 'mock-client-secret'
         storageConfig.demographicsTenantId = 'mock-tenant-id'
 
-        initialiseContainers()
+        await initialiseContainers()
 
         expect(ClientSecretCredential).toHaveBeenCalledWith(
           'mock-tenant-id',
@@ -178,13 +178,13 @@ describe('storage', () => {
         )
       })
 
-      test('should use DefaultAzureCredential when no client credentials are provided', () => {
+      test('should use DefaultAzureCredential when no client credentials are provided', async () => {
         storageConfig.useConnectionStr = false
         storageConfig.demographicsClientId = null
         storageConfig.demographicsClientSecret = null
         storageConfig.demographicsTenantId = null
 
-        initialiseContainers()
+        await initialiseContainers()
 
         expect(DefaultAzureCredential).toHaveBeenCalled()
         expect(ClientSecretCredential).not.toHaveBeenCalled()
@@ -192,19 +192,19 @@ describe('storage', () => {
     })
 
     describe('setupDaxBlobServiceClient', () => {
-      test('should use connection string for DAX BlobServiceClient when useDaxConnectionStr is true', () => {
+      test('should use connection string for DAX BlobServiceClient when useDaxConnectionStr is true', async () => {
         storageConfig.useDaxConnectionStr = true
         storageConfig.connectionString = 'mock-dax-connection-string'
 
-        initialiseContainers()
+        await initialiseContainers()
 
         expect(BlobServiceClient.fromConnectionString).toHaveBeenCalledWith('mock-dax-connection-string')
       })
 
-      test('should use DefaultAzureCredential when useDaxConnectionStr is false', () => {
+      test('should use DefaultAzureCredential when useDaxConnectionStr is false', async () => {
         storageConfig.useDaxConnectionStr = false
 
-        initialiseContainers()
+        await initialiseContainers()
 
         expect(DefaultAzureCredential).toHaveBeenCalled()
       })

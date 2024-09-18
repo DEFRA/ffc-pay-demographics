@@ -33,7 +33,8 @@ container:
   demographicsStorageConnectionString: myconnectionstring
   demographicsStorageShareName: demographics
   daxStorageShareName: demographics
-  storageFolder: dax
+  storageFolder: inbound
+  storageContainer: dax
   daxStorageOutboundFolder: outbound
   messageQueueHost: namespace.servicebus.windows.net
   updatesMessageConnectionString: dummy

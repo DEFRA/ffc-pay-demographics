@@ -13,6 +13,7 @@ data:
   DEMOGRAPHICS_STORAGE_CONNECTION_STRING: {{ quote .Values.container.demographicsStorageConnectionString }}
   DEMOGRAPHICS_STORAGE_SHARE_NAME: {{ quote .Values.container.demographicsStorageShareName }}
   AZURE_STORAGE_FOLDER: {{ quote .Values.container.storageFolder }}
+  AZURE_STORAGE_CONTAINER: {{ quote .Values.container.storageContainer }}
   DAX_STORAGE_OUTBOUND_FOLDER_NAME: {{ quote .Values.container.daxStorageOutboundFolder }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
   UPDATES_MESSAGE_QUEUE_HOST: {{ quote .Values.container.updatesMessageQueueHost }}

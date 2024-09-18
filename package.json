@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-demographics",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "Process customer updates",
   "homepage": "https://github.com/DEFRA/ffc-pay-demographics",
   "main": "app/index.js",

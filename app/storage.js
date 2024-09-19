@@ -4,6 +4,7 @@ const { storageConfig } = require('./config')
 const { DEMOGRAPHICS, DAX } = require('./constants/containers')
 
 let blobServiceClient
+let daxBlobServiceClient
 let foldersInitialised
 let demographicsContainer
 let daxContainer
@@ -30,13 +31,24 @@ const setupBlobServiceClient = () => {
     blobServiceClient = new BlobServiceClient(uri, credential)
   }
   demographicsContainer = blobServiceClient.getContainerClient(storageConfig.demographicsContainer)
-  daxContainer = blobServiceClient.getContainerClient(storageConfig.daxContainer)
+}
+
+const setupDaxBlobServiceClient = () => {
+  if (storageConfig.useDaxConnectionStr) {
+    console.log('Using connection string for FCP BlobServiceClient')
+    daxBlobServiceClient = BlobServiceClient.fromConnectionString(storageConfig.connectionString)
+  } else {
+    console.log('Using DefaultAzureCredential for FCP BlobServiceClient')
+    daxBlobServiceClient = new BlobServiceClient(`https://${storageConfig.daxStorageAccount}.blob.core.windows.net`, new DefaultAzureCredential())
+  }
+  daxContainer = daxBlobServiceClient.getContainerClient(storageConfig.daxContainer)
 }
 
 const initialiseContainers = async () => {
-  if (!containersInitialised) {
-    setupBlobServiceClient()
-    if (storageConfig.enabled) {
+  if (storageConfig.enabled) {
+    if (!containersInitialised) {
+      setupBlobServiceClient()
+      setupDaxBlobServiceClient()
       if (storageConfig.createContainers) {
         console.log('Making sure blob containers exist')
         await demographicsContainer.createIfNotExists()

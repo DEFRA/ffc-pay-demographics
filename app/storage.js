@@ -26,7 +26,7 @@ const setupBlobServiceClient = () => {
       )
     } else {
       console.log('Using DefaultAzureCredential for BlobServiceClient')
-      credential = new DefaultAzureCredential()
+      credential = new DefaultAzureCredential({ managedIdentityClientId: storageConfig.managedIdentityClientId })
     }
     blobServiceClient = new BlobServiceClient(uri, credential)
   }
@@ -39,7 +39,7 @@ const setupDaxBlobServiceClient = () => {
     daxBlobServiceClient = BlobServiceClient.fromConnectionString(storageConfig.connectionString)
   } else {
     console.log('Using DefaultAzureCredential for FCP BlobServiceClient')
-    daxBlobServiceClient = new BlobServiceClient(`https://${storageConfig.daxStorageAccount}.blob.core.windows.net`, new DefaultAzureCredential())
+    daxBlobServiceClient = new BlobServiceClient(`https://${storageConfig.daxStorageAccount}.blob.core.windows.net`, new DefaultAzureCredential({ managedIdentityClientId: storageConfig.managedIdentityClientId }))
   }
   daxContainer = daxBlobServiceClient.getContainerClient(storageConfig.daxContainer)
 }

@@ -1,0 +1,16 @@
+resources:
+  identity: pay-demographics
+  postgreSql:
+    name: ffc-pay-demographics
+  topics:
+    - name: ffc-pay-demographics
+      role: receiver
+      subscriptions:
+        - name: ffc-pay-demographics
+    - name: ffc-pay-demographics-extract
+      role: sender
+    - name: ffc-pay-demographics-extract
+      role: sender
+
+
+

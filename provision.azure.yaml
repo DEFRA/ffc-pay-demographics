@@ -11,6 +11,3 @@ resources:
       role: sender
     - name: ffc-pay-demographics-extract
       role: sender
-
-
-

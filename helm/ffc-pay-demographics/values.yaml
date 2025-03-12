@@ -51,6 +51,7 @@ container:
   demographicsClientId: dummy-id
   demographicsTenantId: dummy-id
   demographicsClientSecret: dummy-secret
+  processingActive: true
 
 postgresService:
   postgresDb: ffc_pay_demographics

@@ -22,6 +22,7 @@ services:
       UPDATES_MESSAGE_QUEUE_HOST: MockHost
       UPDATES_MESSAGE_QUEUE_PASSWORD: MockPassword
       UPDATES_MESSAGE_QUEUE_USER: MockUser
+      PROCESSING_ACTIVE: true
 
   ffc-pay-demographics-postgres:
     volumes:

@@ -1,6 +1,7 @@
 const Joi = require('joi')
 
 const schema = Joi.object({
+  processingActive: Joi.boolean().default(true),
   enabled: Joi.boolean().default(true),
   daxEnabled: Joi.boolean().default(false),
   pollingInterval: Joi.number().integer().default(60000),
@@ -8,6 +9,7 @@ const schema = Joi.object({
 })
 
 const config = {
+  processingActive: process.env.PROCESSING_ACTIVE,
   enabled: process.env.ENABLED,
   daxEnabled: process.env.DAX_ENABLED,
   pollingInterval: process.env.POLLING_INTERVAL,

@@ -16,6 +16,7 @@ data:
   AZURE_STORAGE_CONTAINER: {{ quote .Values.container.storageContainer }}
   DAX_STORAGE_OUTBOUND_FOLDER_NAME: {{ quote .Values.container.daxStorageOutboundFolder }}
   MESSAGE_QUEUE_HOST: {{ quote .Values.container.messageQueueHost }}
+  PROCESSING_ACTIVE: {{ quote .Values.container.processingActive }}
   UPDATES_MESSAGE_QUEUE_HOST: {{ quote .Values.container.updatesMessageQueueHost }}
   UPDATES_MESSAGE_USE_CREDENTIAL_CHAIN: {{ quote .Values.container.updatesMessageUseCredentialChain }}
   {{- if and (.Values.environmentCode) (eq (.Values.environmentCode | toString ) "snd") (not .Values.pr) }}

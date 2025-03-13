@@ -1,3 +1,3 @@
 module.exports = {
-  GET: 'GET'
+  OK: 200
 }

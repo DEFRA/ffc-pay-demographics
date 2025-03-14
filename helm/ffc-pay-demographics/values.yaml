@@ -52,6 +52,7 @@ container:
   demographicsTenantId: dummy-id
   demographicsClientSecret: dummy-secret
   processingActive: true
+  port: 3003
 
 postgresService:
   postgresDb: ffc_pay_demographics
@@ -59,6 +60,22 @@ postgresService:
   postgresPort: 5432
   postgresSchema: public
   postgresUser: postgres
+
+readinessProbe:
+  path: /healthy
+  port: 3003
+  initialDelaySeconds: 60
+  periodSeconds: 120
+  failureThreshold: 5
+  timeoutSeconds: 30
+
+livenessProbe:
+  path: /healthz
+  port: 3003
+  initialDelaySeconds: 70
+  periodSeconds: 120
+  failureThreshold: 5
+  timeoutSeconds: 30
 
 workloadIdentity: true
 

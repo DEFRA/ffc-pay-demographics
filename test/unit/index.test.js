@@ -67,13 +67,13 @@ describe('app start', () => {
   })
 
   test('starts server when active is true', async () => {
-    processingConfig.active = true
+    processingConfig.processingActive = true
     await startApp()
     expect(mockStartServer).toHaveBeenCalledTimes(1)
   })
 
   test('starts server when active is false', async () => {
-    processingConfig.active = false
+    processingConfig.processingActive = false
     await startApp()
     expect(mockStartServer).toHaveBeenCalledTimes(1)
   })

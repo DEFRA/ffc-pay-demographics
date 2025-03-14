@@ -4,6 +4,7 @@ require('./insights').setup()
 const processing = require('./processing')
 const messaging = require('./messaging')
 const { initialiseContainers } = require('./storage')
+const { start: startServer } = require('./server')
 const { processingConfig } = require('./config')
 
 process.on(['SIGTERM', 'SIGINT'], async () => {
@@ -12,6 +13,7 @@ process.on(['SIGTERM', 'SIGINT'], async () => {
 })
 
 const startApp = async () => {
+  await startServer()
   if (processingConfig.processingActive) {
     await initialiseContainers()
     await messaging.start()

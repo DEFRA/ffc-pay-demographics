@@ -2,4 +2,5 @@ services:
   ffc-pay-demographics:
     command: npm run test:debug
     ports:
+      - "3019:3019"
       - "9111:9229"

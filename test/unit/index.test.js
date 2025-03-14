@@ -1,12 +1,18 @@
 const { processingConfig } = require('../../app/config')
 
 jest.mock('log-timestamp', () => jest.fn())
+
 jest.mock('../../app/insights', () => ({
   setup: jest.fn()
 }))
 const { setup: mockSetup } = require('../../app/insights')
+
+jest.mock('../../app/server')
+const { start: mockStartServer } = require('../../app/server')
+
 jest.mock('../../app/processing')
 const { start: mockProcessingStart } = require('../../app/processing')
+
 jest.mock('../../app/messaging')
 const { start: mockMessagingStart } = require('../../app/messaging')
 
@@ -25,6 +31,18 @@ describe('app start', () => {
       require('../../app')
     })
     expect(mockSetup).toHaveBeenCalled()
+  })
+
+  test('start server when active is true', async () => {
+    processingConfig.processingActive = true
+    await startApp()
+    expect(mockStartServer).toHaveBeenCalled()
+  })
+
+  test('start server if active is false', async () => {
+    processingConfig.processingActive = false
+    await startApp()
+    expect(mockStartServer).toHaveBeenCalled()
   })
 
   test('initialises containers when active is true', async () => {

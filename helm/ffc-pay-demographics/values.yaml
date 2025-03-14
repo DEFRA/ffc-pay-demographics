@@ -25,6 +25,7 @@ container:
   requestCpu: 100m
   limitMemory: 100Mi
   limitCpu: 100m
+  port: 3019
   enabled: true
   daxEnabled: false
   azureStorageAccountName: ffcpay
@@ -59,6 +60,22 @@ postgresService:
   postgresPort: 5432
   postgresSchema: public
   postgresUser: postgres
+
+readinessProbe:
+  path: /healthy
+  port: 3019
+  initialDelaySeconds: 60
+  periodSeconds: 120
+  failureThreshold: 5
+  timeoutSeconds: 30
+
+livenessProbe:
+  path: /healthz
+  port: 3019
+  initialDelaySeconds: 70
+  periodSeconds: 120
+  failureThreshold: 5
+  timeoutSeconds: 30
 
 workloadIdentity: true
 

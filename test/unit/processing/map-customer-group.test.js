@@ -4,27 +4,16 @@ const businessTypeId = require('../../mocks/business-type-id')
 const frn = require('../../mocks/frn')
 const isTrader = require('../../mocks/is-trader')
 
-let excepDB
-let grpDB
-let name
-describe('map customer group', () => {
+describe('mapCustomerGroup', () => {
+  let excepDB, grpDB, name
+
   beforeEach(async () => {
     await db.sequelize.truncate({ cascade: true })
     name = 'Albert Farmers and Friends'
-    excepDB = {
-      claimantExceptionId: 1,
-      name,
-      frn,
-      claimantGroup: 'ABCD',
-      isTrader
-    }
-    grpDB = {
-      claimantGroupId: 1,
-      businessTypeId,
-      rpGroup: name,
-      daxGroup: 'ABCD',
-      isTrader
-    }
+
+    excepDB = { claimantExceptionId: 1, name, frn, claimantGroup: 'ABCD', isTrader }
+    grpDB = { claimantGroupId: 1, businessTypeId, rpGroup: name, daxGroup: 'ABCD', isTrader }
+
     await db.claimantException.create(excepDB)
     await db.claimantGroup.create(grpDB)
   })
@@ -34,25 +23,17 @@ describe('map customer group', () => {
     await db.sequelize.close()
   })
 
-  test('should get correct daxGroup if present in exceptions db', async () => {
-    const result = await mapCustomerGroup(frn, businessTypeId)
-    expect(result.daxGroup).toBe('ABCD')
-  })
-
-  test('should get correct isTrader if present in exceptions db', async () => {
-    const result = await mapCustomerGroup(frn, businessTypeId)
-    expect(result.isTrader).toBe(isTrader)
-  })
-
-  test('should get correct daxGroup if not present in exceptions db, present in groups', async () => {
-    const result = await mapCustomerGroup('9876543210', businessTypeId)
-    expect(result.daxGroup).toBe('ABCD')
-  })
-
-  test('should get correct isTrader if not present in exceptions db, present in groups', async () => {
-    const result = await mapCustomerGroup('9876543210', businessTypeId)
-    expect(result.isTrader).toBe(isTrader)
-  })
+  test.each([
+    ['exception db', frn, businessTypeId, 'ABCD', isTrader],
+    ['groups db fallback', '9876543210', businessTypeId, 'ABCD', isTrader]
+  ])(
+    'should get correct daxGroup and isTrader from %s',
+    async (_, testFrn, testBusinessTypeId, expectedGroup, expectedTrader) => {
+      const result = await mapCustomerGroup(testFrn, testBusinessTypeId)
+      expect(result.daxGroup).toBe(expectedGroup)
+      expect(result.isTrader).toBe(expectedTrader)
+    }
+  )
 
   test('should return null for non-existent exception and group', async () => {
     const result = await mapCustomerGroup('9876543210', '95292')

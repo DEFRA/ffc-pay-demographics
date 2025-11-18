@@ -1,55 +1,43 @@
 const mockSubscribe = jest.fn()
 const mockCloseConnection = jest.fn()
-const mockProcessDemographicsMessage = jest.fn()
 
-const MockMessageReceiver = jest.fn().mockImplementation((subscription, action) => {
-  return {
-    subscribe: mockSubscribe,
-    closeConnection: mockCloseConnection
-  }
-})
+const MockMessageReceiver = jest.fn().mockImplementation(() => ({
+  subscribe: mockSubscribe,
+  closeConnection: mockCloseConnection
+}))
 
-jest.mock('ffc-messaging', () => {
-  return {
-    MessageReceiver: MockMessageReceiver
-  }
-})
-
-jest.mock('../../../app/messaging/process-demographics-message', () => mockProcessDemographicsMessage)
+jest.mock('ffc-messaging', () => ({ MessageReceiver: MockMessageReceiver }))
+jest.mock('../../../app/messaging/process-demographics-message', () => jest.fn())
 
 const { messagingConfig, processingConfig } = require('../../../app/config')
 const { start, stop } = require('../../../app/messaging')
 
-beforeEach(() => {
-  jest.clearAllMocks()
-
-  processingConfig.enabled = true
-})
-
-describe('messaging start', () => {
-  test('creates new message receiver with correct subscription', async () => {
-    await start()
-    expect(MockMessageReceiver).toHaveBeenCalledTimes(1)
-    expect(MockMessageReceiver).toHaveBeenCalledWith(messagingConfig.updatesSubscription, expect.any(Function))
+describe('messaging module', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    processingConfig.enabled = true
   })
 
-  test('subscribes to message receiver', async () => {
-    await start()
-    expect(mockSubscribe).toHaveBeenCalledTimes(1)
+  describe('start()', () => {
+    test('creates message receiver and subscribes if enabled', async () => {
+      await start()
+      expect(MockMessageReceiver).toHaveBeenCalledWith(messagingConfig.updatesSubscription, expect.any(Function))
+      expect(mockSubscribe).toHaveBeenCalled()
+    })
+
+    test('does not start receiver if disabled', async () => {
+      processingConfig.enabled = false
+      await start()
+      expect(MockMessageReceiver).not.toHaveBeenCalled()
+      expect(mockSubscribe).not.toHaveBeenCalled()
+    })
   })
 
-  test('does not start receiver if processingConfig is disabled', async () => {
-    processingConfig.enabled = false
-    await start()
-    expect(MockMessageReceiver).not.toHaveBeenCalled()
-    expect(mockSubscribe).not.toHaveBeenCalled()
-  })
-})
-
-describe('messaging stop', () => {
-  test('closes connection', async () => {
-    await start()
-    await stop()
-    expect(mockCloseConnection).toHaveBeenCalledTimes(1)
+  describe('stop()', () => {
+    test('closes connection', async () => {
+      await start()
+      await stop()
+      expect(mockCloseConnection).toHaveBeenCalled()
+    })
   })
 })

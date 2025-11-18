@@ -7,66 +7,47 @@ const { createMessage } = require('../../../app/messaging/create-message')
 const { sendExtractMessage } = require('../../../app/messaging/send-extract-message')
 const { EXTRACT } = require('../../../app/constants/message-types')
 
-describe('send demographics extract to service bus', () => {
+describe('sendExtractMessage', () => {
   const body = { key: 'value' }
   const mockMessage = { message: 'mockMessage' }
   const mockTopic = 'mockTopic'
+
+  let mockSendMessage, mockCloseConnection
 
   beforeEach(() => {
     jest.clearAllMocks()
     createMessage.mockReturnValue(mockMessage)
     messagingConfig.extractTopic = mockTopic
+
+    mockSendMessage = jest.fn()
+    mockCloseConnection = jest.fn()
+    MessageSender.mockImplementation(() => ({
+      sendMessage: mockSendMessage,
+      closeConnection: mockCloseConnection
+    }))
   })
 
-  test('should create a message with the correct type', async () => {
+  test('creates a message with the correct type', async () => {
     await sendExtractMessage(body)
     expect(createMessage).toHaveBeenCalledWith(body, EXTRACT)
   })
 
-  test('should instantiate MessageSender with the correct topic', async () => {
+  test('instantiates MessageSender with the correct topic', async () => {
     await sendExtractMessage(body)
     expect(MessageSender).toHaveBeenCalledWith(mockTopic)
   })
 
-  test('should send the message using MessageSender', async () => {
-    const mockSendMessage = jest.fn()
-    const mockCloseConnection = jest.fn()
-    MessageSender.mockImplementation(() => ({
-      sendMessage: mockSendMessage,
-      closeConnection: mockCloseConnection
-    }))
+  test('sends the message and closes the connection', async () => {
     await sendExtractMessage(body)
     expect(mockSendMessage).toHaveBeenCalledWith(mockMessage)
-  })
-
-  test('should close the MessageSender connection after sending the message', async () => {
-    const mockSendMessage = jest.fn()
-    const mockCloseConnection = jest.fn()
-    MessageSender.mockImplementation(() => ({
-      sendMessage: mockSendMessage,
-      closeConnection: mockCloseConnection
-    }))
-    await sendExtractMessage(body)
     expect(mockCloseConnection).toHaveBeenCalled()
   })
 
-  test('should throw an error if sendMessage fails', async () => {
-    const mockSendMessage = jest.fn().mockRejectedValue(new Error('sendMessage failed'))
-    const mockCloseConnection = jest.fn()
-    MessageSender.mockImplementation(() => ({
-      sendMessage: mockSendMessage,
-      closeConnection: mockCloseConnection
-    }))
-    await expect(sendExtractMessage(body)).rejects.toThrow('sendMessage failed')
-  })
-
-  test('should throw an error if closeConnection fails', async () => {
-    const mockSendMessage = jest.fn()
-    const mockCloseConnection = jest.fn().mockRejectedValue(new Error('closeConnection failed'))
-    MessageSender.mockImplementation(() => ({
-      sendMessage: mockSendMessage,
-      closeConnection: mockCloseConnection
-    }))
-    await expect(sendExtractMessage(body)).rejects.toThrow('closeConnection failed')
+  test.each([
+    ['sendMessage', () => { mockSendMessage.mockRejectedValue(new Error('sendMessage failed')) }, 'sendMessage failed'],
+    ['closeConnection', () => { mockCloseConnection.mockRejectedValue(new Error('closeConnection failed')) }, 'closeConnection failed']
+  ])('throws an error if %s fails', async (_, setup, expectedError) => {
+    setup()
+    await expect(sendExtractMessage(body)).rejects.toThrow(expectedError)
   })
 })

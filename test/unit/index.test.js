@@ -2,9 +2,7 @@ const { processingConfig } = require('../../app/config')
 
 jest.mock('log-timestamp', () => jest.fn())
 
-jest.mock('../../app/insights', () => ({
-  setup: jest.fn()
-}))
+jest.mock('../../app/insights', () => ({ setup: jest.fn() }))
 const { setup: mockSetup } = require('../../app/insights')
 
 jest.mock('../../app/server')
@@ -26,76 +24,50 @@ describe('app start', () => {
     jest.clearAllMocks()
   })
 
-  test('setup insights', async () => {
-    jest.isolateModules(() => {
-      require('../../app')
-    })
+  test('should setup insights', async () => {
+    jest.isolateModules(() => require('../../app'))
     expect(mockSetup).toHaveBeenCalled()
   })
 
-  test('start server when active is true', async () => {
-    processingConfig.processingActive = true
-    await startApp()
-    expect(mockStartServer).toHaveBeenCalled()
-  })
+  describe.each([
+    { active: true, expectedInit: 1 },
+    { active: false, expectedInit: 0 }
+  ])('when processingActive is $active', ({ active, expectedInit }) => {
+    beforeEach(() => {
+      processingConfig.processingActive = active
+    })
 
-  test('start server if active is false', async () => {
-    processingConfig.processingActive = false
-    await startApp()
-    expect(mockStartServer).toHaveBeenCalled()
-  })
+    test('starts server', async () => {
+      await startApp()
+      expect(mockStartServer).toHaveBeenCalled()
+    })
 
-  test('initialises containers when active is true', async () => {
-    processingConfig.processingActive = true
-    await startApp()
-    expect(mockInitialiseContainers).toHaveBeenCalledTimes(1)
-  })
+    test(`initialises containers ${expectedInit ? 'once' : 'not at all'}`, async () => {
+      await startApp()
+      expect(mockInitialiseContainers).toHaveBeenCalledTimes(expectedInit)
+    })
 
-  test('does not initialise containers when active is false', async () => {
-    processingConfig.processingActive = false
-    await startApp()
-    expect(mockInitialiseContainers).toHaveBeenCalledTimes(0)
-  })
+    test(`starts processing ${expectedInit ? 'once' : 'not at all'}`, async () => {
+      await startApp()
+      expect(mockProcessingStart).toHaveBeenCalledTimes(expectedInit)
+    })
 
-  test('starts processing when active is true', async () => {
-    processingConfig.processingActive = true
-    await startApp()
-    expect(mockProcessingStart).toHaveBeenCalledTimes(1)
-  })
+    test(`starts messaging ${expectedInit ? 'once' : 'not at all'}`, async () => {
+      await startApp()
+      expect(mockMessagingStart).toHaveBeenCalledTimes(expectedInit)
+    })
 
-  test('does not start processing when active is false', async () => {
-    processingConfig.processingActive = false
-    await startApp()
-    expect(mockProcessingStart).toHaveBeenCalledTimes(0)
-  })
-
-  test('starts messaging when active is true', async () => {
-    processingConfig.processingActive = true
-    await startApp()
-    expect(mockMessagingStart).toHaveBeenCalledTimes(1)
-  })
-
-  test('does not start messaging when active is false', async () => {
-    processingConfig.processingActive = false
-    await startApp()
-    expect(mockMessagingStart).toHaveBeenCalledTimes(0)
-  })
-
-  test('does not log console.info when processingActive is true', async () => {
-    processingConfig.processingActive = true
-    const consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation(() => {})
-    await startApp()
-    expect(consoleInfoSpy).not.toHaveBeenCalled()
-    consoleInfoSpy.mockRestore()
-  })
-
-  test('logs console.info when processingActive is false', async () => {
-    processingConfig.processingActive = false
-    const consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation(() => {})
-    await startApp()
-    expect(consoleInfoSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Processing capabilities are currently not enabled in this environment')
-    )
-    consoleInfoSpy.mockRestore()
+    test(`console.info logging ${expectedInit ? 'disabled' : 'enabled'}`, async () => {
+      const consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation(() => {})
+      await startApp()
+      if (active) {
+        expect(consoleInfoSpy).not.toHaveBeenCalled()
+      } else {
+        expect(consoleInfoSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Processing capabilities are currently not enabled in this environment')
+        )
+      }
+      consoleInfoSpy.mockRestore()
+    })
   })
 })

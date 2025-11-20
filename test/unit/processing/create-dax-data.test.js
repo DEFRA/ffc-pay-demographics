@@ -11,7 +11,7 @@ const { mapStreetAddress: mockMapStreetAddress } = require('../../../app/process
 
 const fileContent = require('../../mocks/file-content-manual-address')
 const vendGroup = require('../../mocks/vend-group')
-const isTrader = require('../../mocks/is-trader')
+const isTraderDefault = require('../../mocks/is-trader')
 const countryCode = require('../../mocks/country-code')
 const street1 = require('../../mocks/address-1')
 const street2 = require('../../mocks/address-2')
@@ -26,88 +26,47 @@ const frn = require('../../mocks/frn')
 const email = require('../../mocks/email')
 const businessTypeId = require('../../mocks/business-type-id')
 
-describe('create dax data', () => {
+describe('createDaxData', () => {
   const customer = fileContent.capparty[0]
-  beforeEach(() => {
+  let result
+
+  beforeEach(async () => {
     jest.clearAllMocks()
-    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader })
+    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: isTraderDefault })
     mockMapCountry.mockResolvedValue(countryCode)
     mockMapStreetAddress.mockResolvedValue(`${street1} ${street2} ${street3} ${street4}`)
+    result = await createDaxData(customer)
   })
 
-  test('should obtain vendGroup and isTrader', async () => {
-    await createDaxData(customer)
+  test('obtains vendGroup and isTrader', () => {
     expect(mockMapCustomerGroup).toHaveBeenCalledWith(frn, businessTypeId)
   })
 
-  test('should obtain country code', async () => {
-    await createDaxData(customer)
+  test('obtains country code', () => {
     expect(mockMapCountry).toHaveBeenCalledWith(country)
   })
 
-  test('should obtain street address', async () => {
-    await createDaxData(customer)
+  test('obtains street address', () => {
     expect(mockMapStreetAddress).toHaveBeenCalledWith(customer.address[0])
   })
 
-  test('should return accountNum as FRN', async () => {
-    const result = await createDaxData(customer)
+  test('returns correct fields', () => {
     expect(result.accountNum).toBe(frn)
-  })
-
-  test('should return gsTraderEmail as email address', async () => {
-    const result = await createDaxData(customer)
     expect(result.gsTraderEmail).toBe(email)
-  })
-
-  test('should return gsTraderStatus as Active if isTrader is true', async () => {
-    const result = await createDaxData(customer)
-    expect(result.gsTraderStatus).toBe('Active')
-  })
-
-  test('should return gsTraderStatus as NotATrader if isTrader is false', async () => {
-    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: false })
-    const result = await createDaxData(customer)
-    expect(result.gsTraderStatus).toBe('NotATrader')
-  })
-
-  test('should return vendGroup as vendGroup calculated from mapCustomerGroup', async () => {
-    const result = await createDaxData(customer)
+    expect(result.gsTraderStatus).toBe(isTraderDefault ? 'Active' : 'NotATrader')
     expect(result.vendGroup).toBe(vendGroup)
-  })
-
-  test('should return name as calculated in mapName', async () => {
-    const result = await createDaxData(customer)
     expect(result.name).toBe(name)
-  })
-
-  test('should return uniqueRecordDPPAddrRole as address type', async () => {
-    const result = await createDaxData(customer)
     expect(result.uniqueRecordDPPAddrRole).toBe(addressRole)
-  })
-
-  test('should return city', async () => {
-    const result = await createDaxData(customer)
-    expect(result.city).toBe(city)
-  })
-
-  test('should return countryRegionId as the output of mapCountry', async () => {
-    const result = await createDaxData(customer)
-    expect(result.countryRegionId).toBe(countryCode)
-  })
-
-  test('should return roles as address type', async () => {
-    const result = await createDaxData(customer)
     expect(result.roles).toBe(addressRole)
-  })
-
-  test('should return street as calculated in mapStreetAddress', async () => {
-    const result = await createDaxData(customer)
+    expect(result.city).toBe(city)
+    expect(result.countryRegionId).toBe(countryCode)
     expect(result.street).toBe(`${street1} ${street2} ${street3} ${street4}`)
+    expect(result.zipCode).toBe(postCode)
   })
 
-  test('should return zipCode as postalCode', async () => {
-    const result = await createDaxData(customer)
-    expect(result.zipCode).toBe(postCode)
+  test('gsTraderStatus is NotATrader if isTrader is false', async () => {
+    mockMapCustomerGroup.mockResolvedValue({ daxGroup: vendGroup, isTrader: false })
+    const res = await createDaxData(customer)
+    expect(res.gsTraderStatus).toBe('NotATrader')
   })
 })

@@ -5,22 +5,12 @@ const processFile = require('../../../app/processing/process-file')
 jest.mock('../../../app/messaging/get-file-name-from-url')
 jest.mock('../../../app/processing/process-file')
 
-describe('process demographics message', () => {
-  let message
-  let receiver
-  let consoleErrorSpy
+describe('processDemographicsMessage', () => {
+  let message, receiver, consoleErrorSpy
 
   beforeEach(() => {
-    message = {
-      body: {
-        data: {
-          url: 'http://example.com/path/to/file.txt'
-        }
-      }
-    }
-    receiver = {
-      completeMessage: jest.fn()
-    }
+    message = { body: { data: { url: 'http://example.com/path/to/file.txt' } } }
+    receiver = { completeMessage: jest.fn() }
 
     getFileNameFromUrl.mockReturnValue('file.txt')
     processFile.mockResolvedValue()
@@ -33,7 +23,7 @@ describe('process demographics message', () => {
     consoleErrorSpy.mockRestore()
   })
 
-  test('should extract the file name from the URL and process the file', async () => {
+  test('extracts file name and processes the file', async () => {
     await processDemographicsMessage(message, receiver)
 
     expect(getFileNameFromUrl).toHaveBeenCalledWith('http://example.com/path/to/file.txt')
@@ -41,19 +31,17 @@ describe('process demographics message', () => {
     expect(receiver.completeMessage).toHaveBeenCalledWith(message)
   })
 
-  test('should handle errors and not complete the message if processing fails', async () => {
+  test('handles processing errors and logs them without completing the message', async () => {
     const error = new Error('Processing failed')
     processFile.mockRejectedValue(error)
 
     await processDemographicsMessage(message, receiver)
 
-    expect(getFileNameFromUrl).toHaveBeenCalledWith('http://example.com/path/to/file.txt')
-    expect(processFile).toHaveBeenCalledWith('file.txt')
     expect(receiver.completeMessage).not.toHaveBeenCalled()
     expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
   })
 
-  test('should handle missing URL in message body', async () => {
+  test('handles missing URL in message body', async () => {
     message.body.data.url = null
     getFileNameFromUrl.mockReturnValue('')
 

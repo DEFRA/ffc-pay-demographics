@@ -9,6 +9,7 @@ const processDemographicsMessage = async (message, receiver) => {
     await receiver.completeMessage(message)
   } catch (err) {
     console.error('Unable to process demographics message:', err)
+    await receiver.deadLetterMessage(message)
   }
 }
 

@@ -38,6 +38,7 @@ describe('processDemographicsMessage', () => {
     await processDemographicsMessage(message, receiver)
 
     expect(receiver.completeMessage).not.toHaveBeenCalled()
+    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
     expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
   })
 

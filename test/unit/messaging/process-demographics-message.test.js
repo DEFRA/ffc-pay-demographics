@@ -10,7 +10,7 @@ describe('processDemographicsMessage', () => {
 
   beforeEach(() => {
     message = { body: { data: { url: 'http://example.com/path/to/file.txt' } } }
-    receiver = { completeMessage: jest.fn() }
+    receiver = { completeMessage: jest.fn(), deadLetterMessage: jest.fn() }
 
     getFileNameFromUrl.mockReturnValue('file.txt')
     processFile.mockResolvedValue()

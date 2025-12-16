@@ -10,7 +10,7 @@ describe('processDemographicsMessage', () => {
 
   beforeEach(() => {
     message = { body: { data: { url: 'http://example.com/path/to/file.txt' } } }
-    receiver = { completeMessage: jest.fn() }
+    receiver = { completeMessage: jest.fn(), deadLetterMessage: jest.fn() }
 
     getFileNameFromUrl.mockReturnValue('file.txt')
     processFile.mockResolvedValue()
@@ -38,6 +38,7 @@ describe('processDemographicsMessage', () => {
     await processDemographicsMessage(message, receiver)
 
     expect(receiver.completeMessage).not.toHaveBeenCalled()
+    expect(receiver.deadLetterMessage).toHaveBeenCalledWith(message)
     expect(console.error).toHaveBeenCalledWith('Unable to process demographics message:', error)
   })
 

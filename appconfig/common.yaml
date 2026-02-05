@@ -1,3 +1,0 @@
-container.customerTopicAddress: queue:ffc-pay-customer
-container.demographicsExtractTopicAddress: queue:ffc-pay-demographics-extract
-container.demographicsTopicAddress: queue:ffc-pay-demographics

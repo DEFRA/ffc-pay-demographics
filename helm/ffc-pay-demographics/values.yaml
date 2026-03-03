@@ -15,7 +15,7 @@ containerConfigMap:
   name: ffc-pay-demographics-config-map
 
 containerSecret:
-  name: ffc-pay-demographics-container-secret
+  name: ffc-pay-demographics
   type: Opaque
 
 deployment: {}

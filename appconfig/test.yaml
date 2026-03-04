@@ -12,7 +12,7 @@ secretProviderClass:
         objectType: secret
 
   secretObjects:
-    - secretName: ffc-pay-data-hub
+    - secretName: ffc-pay-demographics
       type: Opaque
       data:
         - objectName: devtest-ffcahwr-appInsights-connectionString

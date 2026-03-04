@@ -11,6 +11,8 @@ secretProviderClass:
     objects:
       - objectName: pre-ffcahwr-appinsights-connectionString
         objectType: secret
+      - objectName: pre-ffcpayDaxServiceBusConnectionString
+        objectType: secret
 
   secretObjects:
     - secretName: ffc-pay-demographics
@@ -18,3 +20,5 @@ secretProviderClass:
       data:
         - objectName: pre-ffcahwr-appinsights-connectionString
           key: APPINSIGHTS_CONNECTIONSTRING
+        - objectName: pre-ffcpayDaxServiceBusConnectionString
+          key: UPDATES_MESSAGE_QUEUE_CONNECTION_STRING

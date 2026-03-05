@@ -6,6 +6,8 @@ container:
   azureStorageAccountName: preffcpayst1001
   endpointEnabled: true
   updatesMesageQueueHost: predaxinfsb1241.servicebus.windows.net
+  demographicsStorageAccountName: prerleinfst1403
+  demographicsStorageShareName: dem-container
 secretProviderClass:
   azure:
     keyvaultName: PREFFCINFKV1001

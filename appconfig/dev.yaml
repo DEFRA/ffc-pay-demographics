@@ -5,6 +5,9 @@ container:
   azureStorageAccountName: devffcpayst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
   updatesMessageQueueHost: devdaxinfsb1241.servicebus.windows.net
+  demographicsStorageAccountName: devrleinfst1403
+  demographicsStorageShareName: dem-container
+
 secretProviderClass:
   azure:
     keyvaultName: DEVFFCINFKV1001
@@ -12,6 +15,10 @@ secretProviderClass:
       - objectName: devtest-ffcahwr-appInsights-connectionString
         objectType: secret
       - objectName: dev-ffcpayDaxServiceBusConnectionString
+        objectType: secret
+      - objectName: dev-ffc-pay-demographics-storage-connection-string
+        objectType: secret
+      - objectName: ffc-pay-demographics-client-secret
         objectType: secret
 
   secretObjects:
@@ -22,3 +29,7 @@ secretProviderClass:
           key: APPINSIGHTS_CONNECTIONSTRING
         - objectName: dev-ffcpayDaxServiceBusConnectionString
           key: UPDATES_MESSAGE_QUEUE_CONNECTION_STRING
+        - objectName: dev-ffc-pay-demographics-storage-connection-string
+          key: DEMOGRAPHICS_STORAGE_CONNECTION_STRING
+        - objectName: ffc-pay-demographics-client-secret
+          key: DEMOGRAPHICS_CLIENT_SECRET

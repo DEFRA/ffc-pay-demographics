@@ -2,12 +2,10 @@ resources:
   identity: pay-demographics
   postgreSql:
     name: ffc-pay-demographics
-  topics:
-    - name: ffc-pay-demographics
-      role: receiver
-      subscriptions:
-        - name: ffc-pay-demographics
-    - name: ffc-pay-demographics-extract
-      role: sender
-    - name: ffc-pay-demographics-extract
-      role: sender
+  service_bus:
+    topics:
+      - name: ffc-pay-demographics-extract
+        defaultMessageTimeToLive: P3650D
+        duplicateDetectionHistoryTimeWindow: PT10M30S
+        requiresDuplicateDetection: true
+        role: sender

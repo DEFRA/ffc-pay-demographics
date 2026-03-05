@@ -31,8 +31,21 @@ resources:
 extends:
   template: fcp-common-pipeline.yaml@templates
   parameters:
-    appFrameworkType: nodejs
+    appFrameworkType: nodejs   # Optional: nodejs (default), dotnet, java
+    Type: kubernetes           # Optional: kubernetes (default), npm, functions, nuget
+    npmLegacyPeerDeps: false   # Optional: default is false
+    dockerFilePath: Dockerfile # Optional default is Dockerfile
+    failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
     prDeployment: ${{ parameters.prDeployment }}
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.sndDeployment }}
-    failOnThreshold: moderate  # Optional: moderate (default), low, high, critical
+    variableGroupName: ffc-pay-demographics-env-var
+    dev_params:
+      container.demographicsClientId: $(dev_demographicsClientId)
+      container.demographicsTenantId: $(dev_demographicsTenantId)
+    test_params:
+      container.demographicsClientId: $(test_demographicsClientId)
+      container.demographicsTenantId: $(test_demographicsTenantId)
+    prd_params:
+      container.demographicsClientId: $(prd_demographicsClientId)
+      container.demographicsTenantId: $(prd_demographicsTenantId)

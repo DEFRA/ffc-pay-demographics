@@ -5,3 +5,4 @@ pr: true
 container:
   azureStorageAccountName: snd2ffcpayst2001
   messageQueueHost: SNDFFCINFSB2001.servicebus.windows.net
+  updatesMessageQueueHost: SNDFFCINFSB2001.servicebus.windows.net

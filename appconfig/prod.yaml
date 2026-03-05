@@ -5,6 +5,7 @@ container:
   messageQueueHost: PRDFFCINFSB1001.servicebus.windows.net
   azureStorageAccountName: prdffcpayst1001
   endpointEnabled: true
+  updatesMesageQueueHost: prddaxinfsb1241.servicebus.windows.net
 secretProviderClass:
   azure:
     keyvaultName: PRDFFCINFKV1001

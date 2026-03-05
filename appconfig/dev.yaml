@@ -4,6 +4,7 @@ environmentCode: dev
 container:
   azureStorageAccountName: devffcpayst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
+  updatesMessageQueueHost: devdaxinfsb1241.servicebus.windows.net
 secretProviderClass:
   azure:
     keyvaultName: DEVFFCINFKV1001

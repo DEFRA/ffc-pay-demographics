@@ -2,8 +2,11 @@
 environment: production
 environmentCode: test
 container:
-  azureStorageAccountName: devffcpayst1001
+  azureStorageAccountName: testffcpayst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
+  updatesMesageQueueHost: predaxinfsb1241.servicebus.windows.net
+  demographicsStorageAccountName: prerleinfst1403
+  demographicsStorageShareName: dem-container
 secretProviderClass:
   azure:
     keyvaultName: DEVFFCINFKV1001
@@ -11,6 +14,10 @@ secretProviderClass:
       - objectName: devtest-ffcahwr-appInsights-connectionString
         objectType: secret
       - objectName: test-ffcpayDaxServiceBusConnectionString
+        objectType: secret
+      - objectName: test-ffc-pay-demographics-storage-connection-string
+        objectType: secret
+      - objectName: test-ffc-pay-demographics-client-secret
         objectType: secret
 
   secretObjects:
@@ -21,3 +28,7 @@ secretProviderClass:
           key: APPINSIGHTS_CONNECTIONSTRING
         - objectName: test-ffcpayDaxServiceBusConnectionString
           key: UPDATES_MESSAGE_QUEUE_CONNECTION_STRING
+        - objectName: test-ffc-pay-demographics-storage-connection-string
+          key: DEMOGRAPHICS_STORAGE_CONNECTION_STRING
+        - objectName: test-ffc-pay-demographics-client-secret
+          key: DEMOGRAPHICS_CLIENT_SECRET

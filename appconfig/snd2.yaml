@@ -4,3 +4,4 @@ environmentCode: snd2
 container:
   messageQueueHost: SNDFFCINFSB2001.servicebus.windows.net
   azureStorageAccountName: snd2ffcpayst2001
+  updatesMessageQueueHost: SNDFFCINFSB2001.servicebus.windows.net

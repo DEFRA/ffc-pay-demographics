@@ -40,12 +40,33 @@ extends:
     branchDeployment: ${{ parameters.branchDeployment }}
     sndDeployment: ${{ parameters.sndDeployment }}
     variableGroupName: ffc-pay-demographics-env-var
+    pr_params:
+      container.useEvents: $(pr_useEvents)
+      container.processingActive: $(pr_processingActive)
+      container.demographicsClientId: $(pr_demographicsClientId)
+      container.demographicsTenantId: $(pr_demographicsTenantId)
+    snd2_params:
+      container.useEvents: $(snd2_useEvents)
+      container.processingActive: $(snd2_processingActive)
+      container.demographicsClientId: $(snd2_demographicsClientId)
+      container.demographicsTenantId: $(snd2_demographicsTenantId)
     dev_params:
+      container.useEvents: $(dev_useEvents)
+      container.processingActive: $(dev_processingActive)
       container.demographicsClientId: $(dev_demographicsClientId)
       container.demographicsTenantId: $(dev_demographicsTenantId)
     test_params:
+      container.useEvents: $(test_useEvents)
+      container.processingActive: $(test_processingActive)
       container.demographicsClientId: $(test_demographicsClientId)
       container.demographicsTenantId: $(test_demographicsTenantId)
+    pre_params:
+      container.useEvents: $(pre_useEvents)
+      container.processingActive: $(pre_processingActive)
+      container.demographicsClientId: $(pre_demographicsClientId)
+      container.demographicsTenantId: $(pre_demographicsTenantId)
     prd_params:
+      container.useEvents: $(prd_useEvents)
+      container.processingActive: $(prd_processingActive)
       container.demographicsClientId: $(prd_demographicsClientId)
       container.demographicsTenantId: $(prd_demographicsTenantId)

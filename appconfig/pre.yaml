@@ -4,7 +4,7 @@ environmentCode: pre
 container:
   messageQueueHost: PREFFCINFSB1001.servicebus.windows.net
   azureStorageAccountName: preffcpayst1001
-  updatesMesageQueueHost: predaxinfsb1241.servicebus.windows.net
+  updatesMessageQueueHost: predaxinfsb1241.servicebus.windows.net
   demographicsStorageAccountName: prerleinfst1403
   demographicsStorageShareName: dem-container
 secretProviderClass:

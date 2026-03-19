@@ -4,7 +4,7 @@ environmentCode: prd
 container:
   messageQueueHost: PRDFFCINFSB1001.servicebus.windows.net
   azureStorageAccountName: prdffcpayst1001
-  updatesMesageQueueHost: prddaxinfsb1241.servicebus.windows.net
+  updatesMessageQueueHost: prddaxinfsb1241.servicebus.windows.net
   demographicsStorageAccountName: prdrleinfst1403
   demographicsStorageShareName: dem-container
 secretProviderClass:

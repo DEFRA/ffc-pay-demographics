@@ -1,5 +1,5 @@
-# ffc-< INSERT SERVICE NAME >/.gitleaks.toml
-title = "ffc-< INSERT SERVICE NAME >"
+# ffc-pay-demographics/.gitleaks.toml
+title = "ffc-pay-demographics"
 
 [extend]
 path = ".gitleaks-shared/.gitleaks.toml"

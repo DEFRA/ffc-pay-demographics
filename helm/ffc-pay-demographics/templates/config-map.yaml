@@ -3,6 +3,7 @@
 data:
   NODE_ENV: {{ quote .Values.environment }}
   APPINSIGHTS_CLOUDROLE: {{ quote .Values.name }}
+  OTEL_SERVICE_NAME: {{ quote .Values.name }}
   ENABLED: {{ quote .Values.container.enabled }}
   DAX_ENABLED: {{ quote .Values.container.daxEnabled }}
   AZURE_STORAGE_USE_CONNECTION_STRING: {{ quote .Values.container.azureStorageUseConnectionString }}

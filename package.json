@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-demographics",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "description": "Process customer updates",
   "homepage": "https://github.com/DEFRA/ffc-pay-demographics",
   "main": "app/index.js",
@@ -27,7 +27,7 @@
     "@azure/identity": "4.4.1",
     "@azure/storage-blob": "12.29.1",
     "@hapi/hapi": "21.4.0",
-    "applicationinsights": "2.9.6",
+    "@azure/monitor-opentelemetry": "1.16.0",
     "ffc-database": "1.0.24",
     "ffc-messaging": "2.10.5",
     "ffc-pay-event-publisher": "1.2.3",

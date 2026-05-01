@@ -4,7 +4,7 @@ environmentCode: test
 container:
   azureStorageAccountName: testffcpayst1001
   messageQueueHost: DEVFFCINFSB1001.servicebus.windows.net
-  updatesMesageQueueHost: predaxinfsb1241.servicebus.windows.net
+  updatesMessageQueueHost: predaxinfsb1241.servicebus.windows.net
   demographicsStorageAccountName: prerleinfst1403
   demographicsStorageShareName: dem-container
 secretProviderClass:

@@ -7,7 +7,6 @@ const schema = Joi.object({
     username: Joi.string(),
     password: Joi.string(),
     useCredentialChain: Joi.bool().default(false),
-    appInsights: Joi.object(),
     managedIdentityClientId: Joi.string().optional()
   },
   customerTopic: {
@@ -25,7 +24,6 @@ const schema = Joi.object({
     password: Joi.string(),
     connectionString: Joi.string(),
     useCredentialChain: Joi.bool().default(false),
-    appInsights: Joi.object()
   },
   updatesSubscription: {
     address: Joi.string(),
@@ -40,7 +38,6 @@ const config = {
     username: process.env.MESSAGE_QUEUE_USER,
     password: process.env.MESSAGE_QUEUE_PASSWORD,
     useCredentialChain: process.env.NODE_ENV === PRODUCTION,
-    appInsights: process.env.NODE_ENV === PRODUCTION ? require('applicationinsights') : undefined,
     managedIdentityClientId: process.env.AZURE_CLIENT_ID
   },
   customerTopic: {
@@ -58,7 +55,6 @@ const config = {
     password: process.env.UPDATES_MESSAGE_QUEUE_PASSWORD,
     connectionString: process.env.UPDATES_MESSAGE_QUEUE_CONNECTION_STRING,
     useCredentialChain: process.env.UPDATES_MESSAGE_USE_CREDENTIAL_CHAIN,
-    appInsights: process.env.NODE_ENV === PRODUCTION ? require('applicationinsights') : undefined
   },
   updatesSubscription: {
     address: process.env.DEMOGRAPHICS_SUBSCRIPTION_ADDRESS,

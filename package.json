@@ -27,7 +27,7 @@
     "@azure/identity": "4.4.1",
     "@azure/storage-blob": "12.31.0",
     "@hapi/hapi": "21.4.0",
-    "@azure/monitor-opentelemetry": "1.16.0",
+    "@azure/monitor-opentelemetry": "1.18.0",
     "ffc-database": "1.0.25",
     "ffc-messaging": "2.10.6",
     "ffc-pay-event-publisher": "1.2.5",
@@ -50,5 +50,9 @@
     "ignore": [
       "**/test-output/**"
     ]
+  },
+  "overrides":  {
+    "protobufjs": "8.2.0",
+    "uuid": "11.1.1"
   }
 }

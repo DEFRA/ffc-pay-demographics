@@ -1,6 +1,6 @@
 {
   "name": "ffc-pay-demographics",
-  "version": "1.2.36",
+  "version": "1.2.37",
   "description": "Process customer updates",
   "homepage": "https://github.com/DEFRA/ffc-pay-demographics",
   "main": "app/index.js",
@@ -51,7 +51,7 @@
       "**/test-output/**"
     ]
   },
-  "overrides":  {
+  "overrides": {
     "protobufjs": "8.2.0",
     "uuid": "11.1.1"
   }

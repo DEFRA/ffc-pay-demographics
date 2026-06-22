@@ -53,6 +53,7 @@ container:
   demographicsTenantId: dummy-id
   demographicsClientSecret: dummy-secret
   processingActive: true
+  azureLogLevel: error
 
 postgresService:
   postgresDb: ffc_pay_demographics

@@ -1,5 +1,12 @@
-jest.mock('ffc-messaging')
-const { MessageSender } = require('ffc-messaging')
+const mockSender = {}
+const mockGetSender = jest.fn().mockReturnValue(mockSender)
+const mockSendMessage = jest.fn()
+
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: mockGetSender,
+  sendMessage: mockSendMessage
+}))
+
 const { messagingConfig } = require('../../../app/config')
 
 jest.mock('../../../app/messaging/create-message')
@@ -12,19 +19,10 @@ describe('sendExtractMessage', () => {
   const mockMessage = { message: 'mockMessage' }
   const mockTopic = 'mockTopic'
 
-  let mockSendMessage, mockCloseConnection
-
   beforeEach(() => {
     jest.clearAllMocks()
     createMessage.mockReturnValue(mockMessage)
     messagingConfig.extractTopic = mockTopic
-
-    mockSendMessage = jest.fn()
-    mockCloseConnection = jest.fn()
-    MessageSender.mockImplementation(() => ({
-      sendMessage: mockSendMessage,
-      closeConnection: mockCloseConnection
-    }))
   })
 
   test('creates a message with the correct type', async () => {
@@ -32,22 +30,18 @@ describe('sendExtractMessage', () => {
     expect(createMessage).toHaveBeenCalledWith(body, EXTRACT)
   })
 
-  test('instantiates MessageSender with the correct topic', async () => {
+  test('gets sender with the correct topic', async () => {
     await sendExtractMessage(body)
-    expect(MessageSender).toHaveBeenCalledWith(mockTopic)
+    expect(mockGetSender).toHaveBeenCalledWith(mockTopic)
   })
 
-  test('sends the message and closes the connection', async () => {
+  test('sends the message', async () => {
     await sendExtractMessage(body)
-    expect(mockSendMessage).toHaveBeenCalledWith(mockMessage)
-    expect(mockCloseConnection).toHaveBeenCalled()
+    expect(mockSendMessage).toHaveBeenCalledWith(mockSender, mockMessage)
   })
 
-  test.each([
-    ['sendMessage', () => { mockSendMessage.mockRejectedValue(new Error('sendMessage failed')) }, 'sendMessage failed'],
-    ['closeConnection', () => { mockCloseConnection.mockRejectedValue(new Error('closeConnection failed')) }, 'closeConnection failed']
-  ])('throws an error if %s fails', async (_, setup, expectedError) => {
-    setup()
-    await expect(sendExtractMessage(body)).rejects.toThrow(expectedError)
+  test('throws an error if sendMessage fails', async () => {
+    mockSendMessage.mockRejectedValue(new Error('sendMessage failed'))
+    await expect(sendExtractMessage(body)).rejects.toThrow('sendMessage failed')
   })
 })

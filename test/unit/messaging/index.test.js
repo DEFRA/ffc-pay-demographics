@@ -1,12 +1,21 @@
-const mockSubscribe = jest.fn()
-const mockCloseConnection = jest.fn()
+const mockReceiver = {
+  subscribe: jest.fn(),
+  close: jest.fn()
+}
+const mockClient = {
+  close: jest.fn()
+}
+const mockCreateServiceBusClient = jest.fn().mockReturnValue(mockClient)
+const mockCreateReceiver = jest.fn().mockReturnValue(mockReceiver)
+const mockSubscribeReceiver = jest.fn()
+const mockCloseSenders = jest.fn()
 
-const MockMessageReceiver = jest.fn().mockImplementation(() => ({
-  subscribe: mockSubscribe,
-  closeConnection: mockCloseConnection
+jest.mock('../../../app/messaging/service-bus', () => ({
+  createServiceBusClient: mockCreateServiceBusClient,
+  createReceiver: mockCreateReceiver,
+  subscribeReceiver: mockSubscribeReceiver,
+  closeSenders: mockCloseSenders
 }))
-
-jest.mock('ffc-messaging', () => ({ MessageReceiver: MockMessageReceiver }))
 jest.mock('../../../app/messaging/process-demographics-message', () => jest.fn())
 
 const { messagingConfig, processingConfig } = require('../../../app/config')
@@ -19,17 +28,19 @@ describe('messaging module', () => {
   })
 
   describe('start()', () => {
-    test('creates message receiver and subscribes if enabled', async () => {
+    test('creates service bus client, receiver and subscribes if enabled', async () => {
       await start()
-      expect(MockMessageReceiver).toHaveBeenCalledWith(messagingConfig.updatesSubscription, expect.any(Function))
-      expect(mockSubscribe).toHaveBeenCalled()
+      expect(mockCreateServiceBusClient).toHaveBeenCalledWith(messagingConfig.updatesSubscription)
+      expect(mockCreateReceiver).toHaveBeenCalledWith(mockClient, messagingConfig.updatesSubscription)
+      expect(mockSubscribeReceiver).toHaveBeenCalledWith(mockReceiver, expect.any(Function), console.error, messagingConfig.updatesSubscription)
     })
 
     test('does not start receiver if disabled', async () => {
       processingConfig.enabled = false
       await start()
-      expect(MockMessageReceiver).not.toHaveBeenCalled()
-      expect(mockSubscribe).not.toHaveBeenCalled()
+      expect(mockCreateServiceBusClient).not.toHaveBeenCalled()
+      expect(mockCreateReceiver).not.toHaveBeenCalled()
+      expect(mockSubscribeReceiver).not.toHaveBeenCalled()
     })
   })
 
@@ -37,7 +48,9 @@ describe('messaging module', () => {
     test('closes connection', async () => {
       await start()
       await stop()
-      expect(mockCloseConnection).toHaveBeenCalled()
+      expect(mockReceiver.close).toHaveBeenCalled()
+      expect(mockClient.close).toHaveBeenCalled()
+      expect(mockCloseSenders).toHaveBeenCalled()
     })
   })
 })

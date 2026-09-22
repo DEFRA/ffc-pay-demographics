@@ -9,3 +9,9 @@ resources:
         duplicateDetectionHistoryTimeWindow: PT10M30S
         requiresDuplicateDetection: true
         role: sender
+      - name: ffc-pay-customer
+        defaultMessageTimeToLive: P3650D
+        duplicateDetectionHistoryTimeWindow: PT10M30S
+        requiresDuplicateDetection: true
+        roles: 
+        - name: sender

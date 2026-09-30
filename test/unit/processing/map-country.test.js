@@ -1,23 +1,29 @@
-const db = require('../../../app/data')
+const { createKnexMock } = require('../../helpers/mock-knex')
+
+const mockDb = createKnexMock(['countries'])
+
+jest.mock('../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close,
+  ...mockDb.tables
+}))
+
 const { mapCountry } = require('../../../app/processing/map-country')
 const country = require('../../mocks/country')
 const countryCode = require('../../mocks/country-code')
 
-let countryDB
 describe('map country', () => {
-  beforeEach(async () => {
-    await db.sequelize.truncate({ cascade: true })
-    countryDB = {
-      countryId: 1,
-      name: country,
-      countryCode
-    }
-    await db.country.create(countryDB)
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockDb.builder.resolves({ countryId: 1, name: country, countryCode })
   })
 
-  afterAll(async () => {
-    await db.sequelize.truncate({ cascade: true })
-    await db.sequelize.close()
+  test('queries countries by name against the pool', async () => {
+    await mapCountry(country)
+    expect(mockDb.tables.countries).toHaveBeenCalledWith()
+    expect(mockDb.builder.where).toHaveBeenCalledWith({ name: country })
+    expect(mockDb.builder.first).toHaveBeenCalledTimes(1)
   })
 
   test('should get correct country code for given country', async () => {
@@ -26,7 +32,13 @@ describe('map country', () => {
   })
 
   test('should return null for non-existent country', async () => {
+    mockDb.builder.resolves(undefined)
     const result = await mapCountry('Al Qolnidar')
     expect(result).toBe(null)
+  })
+
+  test('propagates a database failure', async () => {
+    mockDb.builder.rejects(new Error('DB error'))
+    await expect(mapCountry(country)).rejects.toThrow('DB error')
   })
 })

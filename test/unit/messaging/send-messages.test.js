@@ -1,11 +1,11 @@
+const mockSender = {}
+const mockGetSender = jest.fn().mockReturnValue(mockSender)
 const mockSendMessage = jest.fn()
-const mockCloseConnection = jest.fn()
-const MockMessageSender = jest.fn().mockImplementation(() => ({
-  sendMessage: mockSendMessage,
-  closeConnection: mockCloseConnection
-}))
 
-jest.mock('ffc-messaging', () => ({ MessageSender: MockMessageSender }))
+jest.mock('../../../app/messaging/service-bus', () => ({
+  getSender: mockGetSender,
+  sendMessage: mockSendMessage
+}))
 jest.mock('../../../app/messaging/create-message')
 const { createMessage: mockCreateMessage } = require('../../../app/messaging/create-message')
 
@@ -29,14 +29,13 @@ describe('sendMessages', () => {
     expect(mockCreateMessage).toHaveBeenCalledWith(messages[0], CUSTOMER)
   })
 
-  test('instantiates MessageSender with the correct topic', async () => {
+  test('gets sender with the correct topic', async () => {
     await sendMessages(messages, CUSTOMER)
-    expect(MockMessageSender).toHaveBeenCalledWith(messagingConfig.customerTopic)
+    expect(mockGetSender).toHaveBeenCalledWith(messagingConfig.customerTopic)
   })
 
-  test('sends created message and closes connection', async () => {
+  test('sends created message', async () => {
     await sendMessages(messages, CUSTOMER)
-    expect(mockSendMessage).toHaveBeenCalledWith(messages[0])
-    expect(mockCloseConnection).toHaveBeenCalled()
+    expect(mockSendMessage).toHaveBeenCalledWith(mockSender, messages[0])
   })
 })

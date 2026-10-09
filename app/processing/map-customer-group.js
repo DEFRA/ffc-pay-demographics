@@ -1,8 +1,8 @@
-const db = require('../data')
+const { claimantExceptions, claimantGroups } = require('../database')
 
 const mapCustomerGroup = async (frn, businessTypeId) => {
   if (frn) {
-    const exception = await db.claimantException.findOne({ where: { frn } })
+    const exception = (await claimantExceptions().where({ frn }).first()) ?? null
     if (exception) {
       return {
         daxGroup: exception.claimantGroup,
@@ -11,7 +11,7 @@ const mapCustomerGroup = async (frn, businessTypeId) => {
     }
   }
   if (businessTypeId) {
-    const group = await db.claimantGroup.findOne({ where: { businessTypeId } })
+    const group = (await claimantGroups().where({ businessTypeId }).first()) ?? null
     if (group) {
       return {
         daxGroup: group.daxGroup,

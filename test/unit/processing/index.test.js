@@ -1,4 +1,12 @@
-jest.mock('../../../app/data')
+const { createKnexMock } = require('../../helpers/mock-knex')
+
+const mockDb = createKnexMock()
+
+jest.mock('../../../app/database', () => ({
+  client: mockDb.knex,
+  transaction: mockDb.transaction,
+  close: mockDb.close
+}))
 const { start } = require('../../../app/processing')
 jest.mock('../../../app/processing/process-files')
 const { processFiles } = require('../../../app/processing/process-files')

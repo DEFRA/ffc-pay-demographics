@@ -52,9 +52,6 @@
     ]
   },
   "overrides": {
-    "moment": "2.31.0",
-    "@azure/msal-node": {
-      "uuid": "11.1.1"
-    }
+    "uuid": "11.1.1"
   }
 }
